@@ -68,7 +68,7 @@ def main():
         raise Exception('Entered wrong mode...')
     data = data.most_common()
     for key, value in data:
-        print(f'{key}: {value}')
+        print('{}: {}'.format(key, value))
     
 
 if __name__ == "__main__":
