@@ -42,7 +42,6 @@ def century_stats(filepath):
             if century_line and century_line.group(1) != '':
                 century_line = century_line.group(1).strip()
                 year = re_year.match(century_line)
-                print(year)
                 if year:
                     century = str((int(year.group(1))) // 100 + 1)
                     stats[century + century_suffix(century)] += 1
