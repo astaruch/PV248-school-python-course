@@ -5,7 +5,7 @@ from collections import Counter
 
 def composer_stats(filepath):
     stats = Counter()
-    with open(filepath, 'r', encoding='utf8') as f:
+    with open(filepath, 'r', encoding='utf-8') as f:
         re_composer = re.compile(r"Composer: (.*)")
         for line in f:
             composer_line = re_composer.match(line)
