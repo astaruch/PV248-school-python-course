@@ -35,7 +35,7 @@ def century_stats(filepath):
     stats = Counter()
     with open(filepath, 'r', encoding='utf8') as f:
         re_century_line = re.compile(r"Composition Year: (.*)")
-        re_year = re.compile(r"(\d\d\d\d).*")
+        re_year = re.compile(r".*(\d\d\d\d).*")
         re_century = re.compile(r"(\d\d?)(st|nd|rd|th) century")
         for line in f:
             century_line = re_century_line.match(line)
