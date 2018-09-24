@@ -20,7 +20,7 @@ def composer_stats(filepath):
     return stats
 
 
-def century_appendix(century):
+def century_suffix(century):
     century = int(century)
     if century % 10 == 1:
         return 'st century'
@@ -45,12 +45,12 @@ def century_stats(filepath):
                 print(year)
                 if year:
                     century = str((int(year.group(1))) // 100 + 1)
-                    stats[century + century_appendix(century)] += 1
+                    stats[century + century_suffix(century)] += 1
                     continue
                 century = re_century.match(century_line)
                 if century:
                     century = century.group(1)
-                    stats[century + century_appendix(century)] += 1
+                    stats[century + century_suffix(century)] += 1
                     continue
     f.closed
     del stats['']
