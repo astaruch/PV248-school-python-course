@@ -23,9 +23,11 @@ def composer_stats(filepath):
                     composer = composer.strip()
                     stats[composer] += 1
     f.closed
+    del stats['']
     return stats
 
 def century_stats(filepath):
+
     return
 
 
