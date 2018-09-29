@@ -66,9 +66,10 @@ class Composition:
         self.authors.append(Person(name, born, died))
 
     def format_authors(self):
-        output = ''
+        authors = []
         for author in self.authors:
-            output = output + '; ' + author.format()
+            authors.append(author.format())
+        return '; '.join(authors)
 
 
 class Voice:
@@ -86,8 +87,8 @@ class Person:
     def format(self):
         output = self.name
         if self.born or self.died:
-            output = output + ''.join(filter(None, ['(', self.born, '--',
-                                                    self.died, ')']))
+            output = output + ' ' + ''.join(filter(None, ['(', self.born, '--',
+                                                          self.died, ')']))
         return output
 
 
@@ -112,7 +113,6 @@ def load(filename):
             match = re_print.match(line)
             if match:
                 print_id = match.group(1)
-                print(print_id)
                 continue
             match = re_composer.match(line)
             if match:
@@ -157,21 +157,23 @@ def load(filename):
             match = re_incipit.match(line)
             if match:
                 incipit = match.group(1)
-                continue
-            match = re_new_line.match(line)
-            if match and print_id:
+
                 composition = Composition(title, incipit, key, genre,
                                           composition_year)
 
                 composer_line.split(';')
                 for composer in composer_line.split(';'):
                     name = born = died = None
-                    if '--' in composer:
-                        match = re.match(r'(.*) \((\d+)?--(\d+)?.*\)',
+                    if re.search(r'\d+--?\d+', composer):
+                        match = re.match(r'(.*) \((\d+)?--?(\d+)?',
                                          composer)
-                        name = match.group(1)
-                        born = match.group(2)
-                        died = match.group(3)
+                        if match:
+                            name = match.group(1)
+                            born = match.group(2)
+                            died = match.group(3)
+                        else:
+                            match = re.match(r'(.*) \(', composer)
+                            name = match.group(1)
                     else:
                         name = composer
                     composition.add_author(name, born, died)
@@ -179,10 +181,11 @@ def load(filename):
                 edition = Edition(composition, edition_title)
                 record = Print(print_id, edition, partiture)
 
-                print(record)
-                record.format()
                 prints.append(record)
-                print(print_id)
+                continue
+            match = re_new_line.match(line)
+            if match and print_id:
+
 
                 print_id = composer_line = title = genre = key = None
                 composition_year = publication_year = edition_title = None
@@ -199,7 +202,11 @@ def load(filename):
 def main():
     print(argv)
     prints = load(argv[1])
+    for record in prints:
+        record.format()
+        print('')
     print('Size is {}'.format(len(prints)))
+
 
 if __name__ == '__main__':
     main()
