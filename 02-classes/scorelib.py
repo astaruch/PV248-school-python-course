@@ -48,6 +48,12 @@ class Edition:
     def add_author(self, name, born, died):
         self.authors.append(Person(name, born, died))
 
+    def format_authors(self):
+        authors = []
+        for author in self.authors:
+            authors.append(author.format())
+        return '; '.join(authors)
+
 
 class Composition:
     def __init__(self, name, incipit, key, genre, year):
@@ -182,7 +188,8 @@ def load(filename):
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
                     if '--' in voice_line:
-                        match = re.search(r'(\w+--\w+)[,;]? ?(.*)?', voice_line)
+                        match = re.search(r'(\w+--\w+)[,;]? ?(.*)?',
+                                          voice_line)
                         voice_range = match.group(1)
                         voice_name = match.group(2)
                     else:
@@ -194,12 +201,12 @@ def load(filename):
                 editors_substrings = editor_line.split(',')
                 if len(editors_substrings) % 2 == 0:
                     name = ''
-                    for idx, substring in editors_substrings:
+                    for idx, substring in enumerate(editors_substrings):
                         if idx % 2 == 0:
                             name = name + ', ' + substring
                         else:
                             name = name + substring
-                            edition.add_author(name)
+                            edition.add_author(name, None, None)
                             name = ''
 
                 record = Print(print_id, edition, partiture)
