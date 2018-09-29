@@ -187,9 +187,20 @@ def load(filename):
                         voice_name = match.group(2)
                     else:
                         voice_name = voice_line
-                    composition.add_voice(voice_range, voice_name)
+                    if voice_name != '':
+                        composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
+                editors_substrings = editor_line.split(',')
+                if len(editors_substrings) % 2 == 0:
+                    name = ''
+                    for idx, substring in editors_substrings:
+                        if idx % 2 == 0:
+                            name = name + ', ' + substring
+                        else:
+                            name = name + substring
+                            edition.add_author(name)
+                            name = ''
 
                 record = Print(print_id, edition, partiture)
 
