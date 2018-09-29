@@ -11,6 +11,29 @@ class Print:
     def format(self):
         if self.print_id:
             print("Print Number: {}".format(self.print_id))
+        if self.composition().authors:
+            print("Composer: {}".format(self.composition().format_authors()))
+        if self.composition().name:
+            print("Title: {}".format(self.composition().name))
+        if self.composition().genre:
+            print("Genre: {}".format(self.composition().genre))
+        if self.composition().key:
+            print("Key: {}".format(self.composition().key))
+        if self.composition().year:
+            print("Composition Year: {}".format(self.composition().year))
+        if self.edition.name:
+            print("Edition: {}".format(self.edition.name))
+        if self.edition.authors:
+            print("Editor: {}".format(self.edition.format_authors()))
+        if self.composition().voices:
+            i = 1
+            for voice in self.composition.voices:
+                print("Voice {}: {}".format(i, voice.format()))
+                i = i + 1
+        if self.partiture:
+            print("Partiture: {}".format('yes' if self.partiture else 'no'))
+        if self.composition().incipit:
+            print("Incipit: {}".format(self.composition().incipit))
 
     def composition(self):
         return self.edition.composition
@@ -42,6 +65,11 @@ class Composition:
     def add_author(self, name, born, died):
         self.authors.append(Person(name, born, died))
 
+    def format_authors(self):
+        output = ''
+        for author in self.authors:
+            output = output + '; ' + author.format()
+
 
 class Voice:
     def __init__(self, voice_range, name):
@@ -54,6 +82,13 @@ class Person:
         self.name = name
         self.born = None if born == '' else born
         self.died = None if died == '' else died
+
+    def format(self):
+        output = self.name
+        if self.born or self.died:
+            output = output + ''.join(filter(None, ['(', self.born, '--',
+                                                    self.died, ')']))
+        return output
 
 
 def load(filename):
@@ -77,6 +112,7 @@ def load(filename):
             match = re_print.match(line)
             if match:
                 print_id = match.group(1)
+                print(print_id)
                 continue
             match = re_composer.match(line)
             if match:
@@ -146,6 +182,7 @@ def load(filename):
                 print(record)
                 record.format()
                 prints.append(record)
+                print(print_id)
 
                 print_id = composer_line = title = genre = key = None
                 composition_year = publication_year = edition_title = None
@@ -161,8 +198,8 @@ def load(filename):
 
 def main():
     print(argv)
-    load(argv[1])
-
+    prints = load(argv[1])
+    print('Size is {}'.format(len(prints)))
 
 if __name__ == '__main__':
     main()
