@@ -27,7 +27,7 @@ class Print:
             print("Editor: {}".format(self.edition.format_authors()))
         if self.composition().voices:
             i = 1
-            for voice in self.composition.voices:
+            for voice in self.composition().voices:
                 print("Voice {}: {}".format(i, voice.format()))
                 i = i + 1
         if self.partiture:
@@ -76,6 +76,9 @@ class Voice:
     def __init__(self, voice_range, name):
         self.range = voice_range
         self.name = name
+
+    def format(self):
+        return '; '.join(filter(None, [self.range, self.name]))
 
 
 class Person:
@@ -144,7 +147,7 @@ def load(filename):
                 continue
             match = re_editor.match(line)
             if match:
-                editor = match.group(1)
+                editor_line = match.group(1)
                 continue
             match = re_voice.match(line)
             if match:
@@ -160,7 +163,6 @@ def load(filename):
 
                 composition = Composition(title, incipit, key, genre,
                                           composition_year)
-
                 composer_line.split(';')
                 for composer in composer_line.split(';'):
                     name = born = died = None
@@ -177,19 +179,27 @@ def load(filename):
                     else:
                         name = composer
                     composition.add_author(name, born, died)
+                for voice_line in voice_lines:
+                    voice_range = voice_name = None
+                    if '--' in voice_line:
+                        match = re.search(r'(\w+--\w+)[,;]? ?(.*)?', voice_line)
+                        voice_range = match.group(1)
+                        voice_name = match.group(2)
+                    else:
+                        voice_name = voice_line
+                    composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
+
                 record = Print(print_id, edition, partiture)
 
                 prints.append(record)
                 continue
             match = re_new_line.match(line)
             if match and print_id:
-
-
                 print_id = composer_line = title = genre = key = None
                 composition_year = publication_year = edition_title = None
-                editor = None
+                editor_line = None
                 voice_lines = []
                 partiture = incipit = None
                 continue
