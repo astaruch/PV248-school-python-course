@@ -118,7 +118,10 @@ def load(filename):
 
     prints = voice_lines = []
     with open(filename, 'r', encoding='utf8') as f:
-        for line in f:
+        lines = f.readlines()
+        if '\n' != lines[-1]:
+            lines.append('\n')
+        for line in lines:
             match = re_print.match(line)
             if match:
                 print_id = match.group(1)
