@@ -10,11 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": [
-                ".\\scorelib.txt",
-                "composer",
-                "--debug"
-            ]
+            "args": ["${cwd}/02-classes/scorelib.txt"]
         },
         {
             "name": "Python: Attach",

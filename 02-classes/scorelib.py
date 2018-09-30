@@ -166,7 +166,9 @@ def load(filename):
             match = re_incipit.match(line)
             if match:
                 incipit = match.group(1)
-
+                continue
+            match = re_new_line.match(line)
+            if match and print_id:
                 composition = Composition(title, incipit, key, genre,
                                           composition_year)
                 composer_line.split(';')
@@ -185,6 +187,7 @@ def load(filename):
                     else:
                         name = composer
                     composition.add_author(name, born, died)
+
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
                     if '--' in voice_line:
@@ -212,9 +215,8 @@ def load(filename):
                 record = Print(print_id, edition, partiture)
 
                 prints.append(record)
-                continue
-            match = re_new_line.match(line)
-            if match and print_id:
+
+                # clean up
                 print_id = composer_line = title = genre = key = None
                 composition_year = publication_year = edition_title = None
                 editor_line = None

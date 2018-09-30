@@ -9,7 +9,7 @@ def composer_stats(filepath):
         re_composer = re.compile(r"Composer: (.*)")
         for line in f:
             composer_line = re_composer.match(line)
-            if composer_line: 
+            if composer_line:
                 composers = composer_line.group(1).split(';')
                 for composer in composers:
                     composer = re.sub(r"\(.*\)", "", composer)
@@ -69,8 +69,7 @@ def main():
     data = data.most_common()
     for key, value in data:
         print('{}: {}'.format(key, value))
-    
+
 
 if __name__ == "__main__":
     main()
-    
