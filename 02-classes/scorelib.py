@@ -5,7 +5,7 @@ import re
 class Print:
     def __init__(self, print_id, edition, partiture):
         self.edition = edition
-        self.print_id = print_id
+        self.print_id = print_id.strip() if print_id else None
         self.partiture = partiture
 
     def format(self):
@@ -42,7 +42,7 @@ class Edition:
     def __init__(self, composition, name):
         self.composition = composition
         self.authors = []
-        self.name = name
+        self.name = name.strip() if name else None
 
     def add_author(self, name, born, died):
         self.authors.append(Person(name, born, died))
@@ -56,11 +56,11 @@ class Edition:
 
 class Composition:
     def __init__(self, name, incipit, key, genre, year):
-        self.name = name
-        self.incipit = incipit
-        self.key = key
-        self.genre = genre
-        self.year = year
+        self.name = name.strip() if name else None
+        self.incipit = incipit.strip() if incipit else None
+        self.key = key.strip() if key else None
+        self.genre = genre.strip() if genre else None
+        self.year = year.strip() if year else None
         self.voices = []
         self.authors = []
 
@@ -79,8 +79,8 @@ class Composition:
 
 class Voice:
     def __init__(self, voice_range, name):
-        self.range = voice_range
-        self.name = name
+        self.range = voice_range.strip() if voice_range else None
+        self.name = name.strip() if name else None
 
     def format(self):
         return '; '.join(filter(None, [self.range, self.name]))
@@ -95,8 +95,11 @@ class Person:
     def format(self):
         output = self.name
         if self.born or self.died:
-            output = output + ' ' + ''.join(filter(None, ['(', self.born, '--',
-                                                          self.died, ')']))
+            output = output + ' ' + ''.join(filter(None, ['(',
+                                                          self.born,
+                                                          '--',
+                                                          self.died,
+                                                          ')']))
         return output
 
 
