@@ -51,7 +51,7 @@ class Edition:
         authors = []
         for author in self.authors:
             authors.append(author.format())
-        return '; '.join(authors)
+        return '; '.join(filter(None, authors))
 
 
 class Composition:
@@ -74,7 +74,7 @@ class Composition:
         authors = []
         for author in self.authors:
             authors.append(author.format())
-        return '; '.join(authors)
+        return '; '.join(filter(None, authors))
 
 
 class Voice:
@@ -88,7 +88,7 @@ class Voice:
 
 class Person:
     def __init__(self, name, born, died):
-        self.name = name
+        self.name = name.strip() if name else None
         self.born = None if born == '' else born
         self.died = None if died == '' else died
 
