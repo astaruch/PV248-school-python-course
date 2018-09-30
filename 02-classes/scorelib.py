@@ -234,19 +234,16 @@ def load(filename):
                 voice_lines = []
                 partiture = incipit = None
                 continue
-            print('Some unexpected line')
     f.closed
 
     return prints
 
 
 def main():
-    print(argv)
     prints = load(argv[1])
     for record in prints:
         record.format()
         print('')
-    print('Size is {}'.format(len(prints)))
 
 
 if __name__ == '__main__':
