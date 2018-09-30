@@ -11,7 +11,7 @@ class Print:
     def format(self):
         if self.print_id:
             print("Print Number: {}".format(self.print_id))
-        if self.composition().authors:
+        if self.composition().format_authors():
             print("Composer: {}".format(self.composition().format_authors()))
         if self.composition().name:
             print("Title: {}".format(self.composition().name))
@@ -23,7 +23,7 @@ class Print:
             print("Composition Year: {}".format(self.composition().year))
         if self.edition.name:
             print("Edition: {}".format(self.edition.name))
-        if self.edition.authors:
+        if self.edition.format_authors():
             print("Editor: {}".format(self.edition.format_authors()))
         if self.composition().voices:
             i = 1
