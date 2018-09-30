@@ -207,15 +207,20 @@ def load(filename):
 
                 edition = Edition(composition, edition_title)
                 editors_substrings = editor_line.split(',')
-                if len(editors_substrings) % 2 == 0:
+                if len(editors_substrings) == 2:
+                    for editor in editors_substrings:
+                        edition.add_author(editor, None, None)
+                elif len(editors_substrings) % 2 == 0:
                     name = ''
                     for idx, substring in enumerate(editors_substrings):
                         if idx % 2 == 0:
-                            name = name + ', ' + substring
+                            name = substring + ', '
                         else:
                             name = name + substring
                             edition.add_author(name, None, None)
                             name = ''
+                else:
+                    edition.add_author(editors_substrings[0], None, None)
 
                 record = Print(print_id, edition, partiture)
 
