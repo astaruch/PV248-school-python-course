@@ -218,7 +218,7 @@ def load(filename):
                         name = ''
                         for idx, substring in enumerate(editors_substrings):
                             if idx % 2 == 0:
-                                name = substring + ', '
+                                name = substring + ','
                             else:
                                 name = name + substring
                                 edition.add_author(name, None, None)
