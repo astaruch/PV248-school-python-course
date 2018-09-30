@@ -52,7 +52,7 @@ class Edition:
         authors = []
         for author in self.authors:
             authors.append(author.format())
-        return '; '.join(filter(None, authors))
+        return ', '.join(filter(None, authors))
 
 
 class Composition:
