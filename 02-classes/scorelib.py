@@ -30,8 +30,7 @@ class Print:
             for voice in self.composition().voices:
                 print("Voice {}: {}".format(i, voice.format()))
                 i = i + 1
-        if self.partiture:
-            print("Partiture: {}".format('yes' if self.partiture else 'no'))
+        print("Partiture: {}".format('yes' if self.partiture else 'no'))
         if self.composition().incipit:
             print("Incipit: {}".format(self.composition().incipit))
 
