@@ -182,19 +182,18 @@ def load(filename):
                     composer_line.split(';')
                     for composer in composer_line.split(';'):
                         name = born = died = None
-                        if re.search(r'\d+--?\d+', composer):
-                            match = re.match(r'(.*) \((\d+)?--?(\d+)?',
-                                            composer)
-                            if match:
-                                name = match.group(1)
-                                born = match.group(2)
-                                died = match.group(3)
-                            else:
-                                match = re.match(r'(.*) \(', composer)
-                                name = match.group(1)
-                        else:
-                            name = composer
-                        composition.add_author(name, born, died)
+                        re_year = re.compile(
+                            r'(.*) \((\*)?(\d{3,4})?-?-?(\+)?(\d{3,4})?'
+                        )
+                        match = re_year.match(composer)
+                        if match:
+                            name = match.group(1)
+                            # sign_born = match.group(2)
+                            born = match.group(3)
+                            # sign_died = match.group(4)
+                            died = match.group(5)
+                            composition.add_author(name, born, died)
+                            # print(name, sign_born, born, sign_died, died)
 
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
