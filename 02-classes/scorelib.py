@@ -237,6 +237,7 @@ def load(filename):
                 continue
     f.closed
 
+    prints.sort(key=lambda x: int(x.print_id))
     return prints
 
 
