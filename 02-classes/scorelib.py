@@ -166,7 +166,7 @@ def load(filename):
                 continue
             match = re_partiture.match(line)
             if match:
-                partiture = True if match.group(1) == 'yes' else False
+                partiture = True if 'yes' in match.group(1) else False
                 continue
             match = re_incipit.match(line)
             if match:
