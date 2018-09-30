@@ -28,8 +28,9 @@ class Print:
         if self.composition().voices:
             i = 1
             for voice in self.composition().voices:
-                print("Voice {}: {}".format(i, voice.format()))
-                i = i + 1
+                if voice.format() != '':
+                    print("Voice {}: {}".format(i, voice.format()))
+                    i = i + 1
         print("Partiture: {}".format('yes' if self.partiture else 'no'))
         if self.composition().incipit:
             print("Incipit: {}".format(self.composition().incipit))
