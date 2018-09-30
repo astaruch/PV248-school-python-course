@@ -119,7 +119,8 @@ def load(filename):
     re_incipit = re.compile(r'Incipit ?\d?: ?(.*)?')
     re_new_line = re.compile(r'\n')
 
-    prints = voice_lines = []
+    prints = []
+    voice_lines = []
     with open(filename, 'r', encoding='utf8') as f:
         lines = f.readlines()
         if '\n' != lines[-1]:
