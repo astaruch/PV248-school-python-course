@@ -178,22 +178,23 @@ def load(filename):
             if match and print_id:
                 composition = Composition(title, incipit, key, genre,
                                           composition_year)
-                composer_line.split(';')
-                for composer in composer_line.split(';'):
-                    name = born = died = None
-                    if re.search(r'\d+--?\d+', composer):
-                        match = re.match(r'(.*) \((\d+)?--?(\d+)?',
-                                         composer)
-                        if match:
-                            name = match.group(1)
-                            born = match.group(2)
-                            died = match.group(3)
+                if composer_line:
+                    composer_line.split(';')
+                    for composer in composer_line.split(';'):
+                        name = born = died = None
+                        if re.search(r'\d+--?\d+', composer):
+                            match = re.match(r'(.*) \((\d+)?--?(\d+)?',
+                                            composer)
+                            if match:
+                                name = match.group(1)
+                                born = match.group(2)
+                                died = match.group(3)
+                            else:
+                                match = re.match(r'(.*) \(', composer)
+                                name = match.group(1)
                         else:
-                            match = re.match(r'(.*) \(', composer)
-                            name = match.group(1)
-                    else:
-                        name = composer
-                    composition.add_author(name, born, died)
+                            name = composer
+                        composition.add_author(name, born, died)
 
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
@@ -208,21 +209,22 @@ def load(filename):
                         composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
-                editors_substrings = editor_line.split(',')
-                if len(editors_substrings) == 2:
-                    for editor in editors_substrings:
-                        edition.add_author(editor, None, None)
-                elif len(editors_substrings) % 2 == 0:
-                    name = ''
-                    for idx, substring in enumerate(editors_substrings):
-                        if idx % 2 == 0:
-                            name = substring + ', '
-                        else:
-                            name = name + substring
-                            edition.add_author(name, None, None)
-                            name = ''
-                else:
-                    edition.add_author(editors_substrings[0], None, None)
+                if editor_line:
+                    editors_substrings = editor_line.split(',')
+                    if len(editors_substrings) == 2:
+                        for editor in editors_substrings:
+                            edition.add_author(editor, None, None)
+                    elif len(editors_substrings) % 2 == 0:
+                        name = ''
+                        for idx, substring in enumerate(editors_substrings):
+                            if idx % 2 == 0:
+                                name = substring + ', '
+                            else:
+                                name = name + substring
+                                edition.add_author(name, None, None)
+                                name = ''
+                    else:
+                        edition.add_author(editors_substrings[0], None, None)
 
                 record = Print(print_id, edition, partiture)
 
