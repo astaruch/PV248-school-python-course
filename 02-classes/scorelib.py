@@ -194,6 +194,8 @@ def load(filename):
                             died = match.group(5)
                             composition.add_author(name, born, died)
                             # print(name, sign_born, born, sign_died, died)
+                        else:
+                            composition.add_author(composer, None, None)
 
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
