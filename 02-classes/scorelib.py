@@ -206,8 +206,7 @@ def load(filename):
                         voice_name = match.group(2)
                     else:
                         voice_name = voice_line
-                    if voice_name != '':
-                        composition.add_voice(voice_range, voice_name)
+                    composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
                 if editor_line:
