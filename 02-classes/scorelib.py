@@ -200,13 +200,25 @@ def load(filename):
                 for voice_line in voice_lines:
                     voice_range = voice_name = None
                     if '--' in voice_line:
-                        match = re.search(r'(\w+--\w+)[,;]? ?(.*)?',
-                                          voice_line)
-                        voice_range = match.group(1)
-                        voice_name = match.group(2)
+                        match = re.search(
+                            r'^(.*)--([^,;\n]*)[,;\n] ?(.*)?', voice_line)
+                        if match:
+                            voice_range = match.group(1) \
+                                + '--' + match.group(2)
+                            voice_name = match.group(3)
+                        else:
+                            voice_name = voice_line
                     else:
                         voice_name = voice_line
                     composition.add_voice(voice_range, voice_name)
+
+                    #     match = re.search(r'(\w+--\w+)[,;]? ?(.*)?',
+                    #                       voice_line)
+                    #     voice_range = match.group(1)
+                    #     voice_name = match.group(2)
+                    # else:
+                    #     voice_name = voice_line
+                    # composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
                 if editor_line:
