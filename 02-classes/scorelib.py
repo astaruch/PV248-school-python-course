@@ -110,8 +110,8 @@ def load(filename):
     re_title = re.compile(r'Title: (.*)')
     re_genre = re.compile(r'Genre: ?(.*)?')
     re_key = re.compile(r'Key: ?(.*)?')
-    re_composition_year = re.compile(r'Composition Year: ?(\d+)?')
-    re_publication_year = re.compile(r'Publication Year: ?(\d+)?')
+    re_composition_year = re.compile(r'Composition Year: ?(\d+)? ?$')
+    re_publication_year = re.compile(r'Publication Year: ?(\d+)? ?$')
     re_edition = re.compile(r'Edition: (.*)')
     re_editor = re.compile(r'Editor: ?(.*)?')
     re_voice = re.compile(r'Voice \d+: ?(.*)?')
@@ -211,14 +211,6 @@ def load(filename):
                     else:
                         voice_name = voice_line
                     composition.add_voice(voice_range, voice_name)
-
-                    #     match = re.search(r'(\w+--\w+)[,;]? ?(.*)?',
-                    #                       voice_line)
-                    #     voice_range = match.group(1)
-                    #     voice_name = match.group(2)
-                    # else:
-                    #     voice_name = voice_line
-                    # composition.add_voice(voice_range, voice_name)
 
                 edition = Edition(composition, edition_title)
                 if editor_line:
