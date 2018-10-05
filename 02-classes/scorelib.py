@@ -5,7 +5,7 @@ import re
 class Print:
     def __init__(self, print_id, edition, partiture):
         self.edition = edition
-        self.print_id = print_id.strip() if print_id else None
+        self.print_id = int(print_id.strip()) if print_id else None
         self.partiture = partiture
 
     def format(self):
