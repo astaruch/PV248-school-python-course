@@ -61,7 +61,7 @@ class Composition:
         self.incipit = incipit.strip() if incipit else None
         self.key = key.strip() if key else None
         self.genre = genre.strip() if genre else None
-        self.year = year.strip() if year else None
+        self.year = int(year.strip()) if year else None
         self.voices = []
         self.authors = []
 
@@ -90,16 +90,16 @@ class Voice:
 class Person:
     def __init__(self, name, born, died):
         self.name = name.strip() if name else None
-        self.born = None if born == '' else born
-        self.died = None if died == '' else died
+        self.born = None if (not born or born == '') else int(born)
+        self.died = None if (not died or died == '') else int(died)
 
     def format(self):
         output = self.name
         if self.born or self.died:
             output = output + ' ' + ''.join(filter(None, ['(',
-                                                          self.born,
+                                                          str(self.born),
                                                           '--',
-                                                          self.died,
+                                                          str(self.died),
                                                           ')']))
         return output
 
