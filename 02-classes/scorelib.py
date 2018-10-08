@@ -9,8 +9,7 @@ class Print:
         self.partiture = partiture
 
     def format(self):
-        if self.print_id:
-            print("Print Number: {}".format(self.print_id))
+        print("Print Number: {}".format(self.print_id))
         if self.composition().format_authors():
             print("Composer: {}".format(self.composition().format_authors()))
         if self.composition().name:
