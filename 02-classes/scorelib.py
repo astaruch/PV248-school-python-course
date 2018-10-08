@@ -95,9 +95,13 @@ class Person:
     def format(self):
         output = self.name
         if self.born or self.died:
-            output = output + ' ' + ''.join(
-                filter(lambda x: x is None or x == 'None',
-                       ['(', str(self.born), '--', str(self.died), ')']))
+            output = output + ' ('
+            if self.born:
+                output = output + str(self.born)
+            output = output + '--'
+            if self.died:
+                output = output + str(self.died)
+            output = output + ')'
         return output
 
 
