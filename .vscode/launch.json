@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["${cwd}/02-classes/scorelib.txt"]
+            "args": ["${cwd}/03-sqlite/scorelib.txt", "scorelib.dat"]
         },
         {
             "name": "Python: Attach",
