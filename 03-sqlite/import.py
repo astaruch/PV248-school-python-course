@@ -10,15 +10,17 @@ def create_tables(db_cursor, input_schema, output_db):
         db_cursor.executescript(tables)
 
 
-def insert_voice(db_cursor, voice, score_id):
-    query = "INSERT INTO voice VALUES(number, score, range, name) (?, ?, ?, ?)"
-    values = (voice.number, score_id, voice.range, voice.name)
+def insert_voice(db_cursor, number, voice, score_id):
+    query = """
+    INSERT INTO voice (number, score, range, name) VALUES (?, ?, ?, ?)
+    """
+    values = (number, score_id, voice.range, voice.name)
     db_cursor.execute(query, values)
 
 
 def insert_edition(db_cursor, edition, score_id):
     query = "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)"
-    values = (score_id, edition.name, edition.year)
+    values = (score_id, edition.name, None)
     db_cursor.execute(query, values)
     return db_cursor.lastrowid
 
@@ -35,9 +37,10 @@ def insert_edition_author(db_cursor, edition_id, editor_id):
     db_cursor.execute(query, values)
 
 
-def insert_print(db_cursor, print, edition_id):
+def insert_print(db_cursor, _print, edition_id):
     query = "INSERT INTO print(partiture, edition) VALUES (?, ?)"
-    values = (print, edition_id)
+    partiture = "Y" if _print.partiture else "N"
+    values = (partiture, edition_id)
     db_cursor.execute(query, values)
 
 
@@ -54,6 +57,11 @@ def persist_print(db_cursor, _print):
     score_id = insert_score(db_cursor, _print.composition())
 
     edition_id = insert_edition(db_cursor, _print.edition, score_id)
+
+    insert_print(db_cursor, _print, edition_id)
+
+    for index, voice in enumerate(_print.composition().voices):
+        insert_voice(db_cursor, index + 1, voice, score_id)
 
     for editor in _print.edition.authors:
         editor_id = persist_person(db_cursor, editor)
