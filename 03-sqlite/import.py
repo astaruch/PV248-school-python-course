@@ -3,52 +3,6 @@ import sqlite3
 import os
 
 
-def create_tables(conn, c):
-    query = """
-create table score ( id integer primary key not null,
-                     name varchar,
-                     genre varchar,
-                     key varchar,
-                     incipit varchar,
-                     year integer );
-    """
-    c.execute(query)
-    query = """
-create table voice ( id integer primary key not null,
-                     number integer not null,
-                     score integer references score( id ) not null,
-                     range varchar,
-                     name varchar );
-    """
-    c.execute(query)
-    query = """
-create table edition ( id integer primary key not null,
-                       score integer references score( id ) not null,
-                       name varchar,
-                       year integer );
-    """
-    c.execute(query)
-    query = """
-create table score_author( id integer primary key not null,
-                           score integer references score( id ) not null,
-                           composer integer references person( id ) not null );
-    """
-    c.execute(query)
-    query = """
-create table edition_author( id integer primary key not null,
-                             edition integer references edition( id ) not null,
-                             editor integer references person( id ) not null );
-    """
-    c.execute(query)
-    query = """
-create table print ( id integer primary key not null,
-                     partiture char(1) default 'N' not null,
-                     edition integer references edition( id ) );
-    """
-    c.execute(query)
-    conn.commit()
-
-
 def insert_score(conn, c, score):
     query = "INSERT INTO score VALUES (?, ?, ?, ?, ?)"
     values = (score.name, score.genre, score.key, score.incipit, score.year)
@@ -98,11 +52,23 @@ def parse(filename):
     conn.close()
 
 
+def create_tables(db_connection, db_cursor, input_schema, output_db):
+    with open(input_schema, 'r') as sql_schema:
+        tables = sql_schema.read()
+        db_cursor.executescript(tables)
+        db_connection.commit()
+
+
 def main():
-    if os.path.isfile(argv[2]):
-        os.remove(argv[2])
-    parse(argv[1])
-    pass
+    input_source = argv[1]
+    output_db_filename = argv[2]
+    if os.path.isfile(output_db_filename):
+        os.remove(output_db_filename)
+    db_conn = sqlite3.connect(output_db_filename)
+    db_curs = db_conn.cursor()
+
+    sql_source_file = 'scorelib.sql'
+    create_tables(db_conn, db_curs, sql_source_file, output_db_filename)
 
 
 if __name__ == '__main__':
