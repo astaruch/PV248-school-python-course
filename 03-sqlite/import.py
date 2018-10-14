@@ -73,11 +73,12 @@ def persist_person(db_cursor, person):
         return db_cursor.lastrowid
     else:
         # person is alraedy in db. try to update born+died
-        query = "SELECT born, died FROM person WHERE person.name = ?"
+        query = "SELECT id, born, died FROM person WHERE person.name = ?"
         db_cursor.execute(query, (person.name,))
         row = db_cursor.fetchone()
-        born = row[0]
-        died = row[1]
+        person_id = row[0]
+        born = row[1]
+        died = row[2]
         new_born = None
         new_died = None
         if born is None and person.born is not None:
@@ -87,7 +88,8 @@ def persist_person(db_cursor, person):
         if new_born is not None or new_died is not None:
             query = "UPDATE person SET born = ?, died = ? WHERE name = ?"
             db_cursor.execute(query, (new_born, new_died, person.name,))
-            print("updating born/died for {}".format(person.name))
+            print("{}. updating born/died for {}".format(person_id, person.name))
+        return person_id
 
 
 def main():
