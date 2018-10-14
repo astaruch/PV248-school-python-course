@@ -56,18 +56,38 @@ def create_tables(db_cursor, input_schema, output_db):
 
 def persist_people(db_cursor, _print):
     for editor in _print.edition.authors:
-        persist_person(db_cursor, editor)
+        editor_id = persist_person(db_cursor, editor)
 
     for composer in _print.composition().authors:
-        persist_person(db_cursor, composer)
+        composer_id = persist_person(db_cursor, composer)
 
 
 def persist_person(db_cursor, person):
     # check if person is in DB
     query = "SELECT COUNT(*) FROM person WHERE person.name = ?"
     db_cursor.execute(query, (person.name,))
-    if db_cursor.fetchone()[0] == 0:
+    row = db_cursor.fetchone()[0]
+    if row == 0:
+        # person is not in a db
         insert_person(db_cursor, person)
+        return db_cursor.lastrowid
+    else:
+        # person is alraedy in db. try to update born+died
+        query = "SELECT born, died FROM person WHERE person.name = ?"
+        db_cursor.execute(query, (person.name,))
+        row = db_cursor.fetchone()
+        born = row[0]
+        died = row[1]
+        new_born = None
+        new_died = None
+        if born is None and person.born is not None:
+            new_born = person.born
+        if died is None and person.died is not None:
+            new_died = person.died
+        if new_born is not None or new_died is not None:
+            query = "UPDATE person SET born = ?, died = ? WHERE name = ?"
+            db_cursor.execute(query, (new_born, new_died, person.name,))
+            print("updating born/died for {}".format(person.name))
 
 
 def main():
