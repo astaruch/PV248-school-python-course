@@ -20,6 +20,7 @@ def insert_edition(db_cursor, edition, score_id):
     query = "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)"
     values = (score_id, edition.name, edition.year)
     db_cursor.execute(query, values)
+    return db_cursor.lastrowid
 
 
 def insert_score_author(db_cursor, score_id, composer_id):
@@ -52,11 +53,15 @@ def insert_score(db_cursor, score):
 def persist_print(db_cursor, _print):
     score_id = insert_score(db_cursor, _print.composition())
 
+    edition_id = insert_edition(db_cursor, _print.edition, score_id)
+
     for editor in _print.edition.authors:
         editor_id = persist_person(db_cursor, editor)
+        insert_edition_author(db_cursor, edition_id, editor_id)
 
     for composer in _print.composition().authors:
         composer_id = persist_person(db_cursor, composer)
+        insert_score_author(db_cursor, score_id, composer_id)
 
 
 def insert_person(db_cursor, person):
