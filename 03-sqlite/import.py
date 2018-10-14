@@ -4,53 +4,70 @@ import os
 import scorelib
 
 
-def insert_score(db_connection, db_cursor, score):
-    query = "INSERT INTO score VALUES (?, ?, ?, ?, ?)"
+def insert_person(db_cursor, person):
+    query = "INSERT INTO person(born, died, name) VALUES(?, ?, ?)"
+    values = (person.born, person.died, person.name)
+    db_cursor.execute(query, values)
+
+
+def insert_score(db_cursor, score):
+    query = """
+    INSERT INTO score(name, genre, key, incipt, year) VALUES (?, ?, ?, ?, ?)
+    """
     values = (score.name, score.genre, score.key, score.incipit, score.year)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def insert_voice(db_connection, db_cursor, voice, score_id):
-    query = "INSERT INTO voice VALUES (?, ?, ?, ?)"
+def insert_voice(db_cursor, voice, score_id):
+    query = "INSERT INTO voice VALUES(number, score, range, name) (?, ?, ?, ?)"
     values = (voice.number, score_id, voice.range, voice.name)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def insert_edition(db_connection, db_cursor, edition, score_id):
-    query = "INSERT INTO edition VALUES (?, ?, ?)"
+def insert_edition(db_cursor, edition, score_id):
+    query = "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)"
     values = (score_id, edition.name, edition.year)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def insert_score_author(db_connection, db_cursor, score_id, composer_id):
-    query = "INSERT INTO score_author VALUES (?, ?)"
+def insert_score_author(db_cursor, score_id, composer_id):
+    query = "INSERT INTO score_author(score, composer) VALUES (?, ?)"
     values = (score_id, composer_id)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def insert_edition_author(db_connection, db_cursor, edition_id, editor_id):
-    query = "INSERT INTO edition_autho VALUES (?, ?)"
+def insert_edition_author(db_cursor, edition_id, editor_id):
+    query = "INSERT INTO edition_author(edition, editor) VALUES (?, ?)"
     values = (edition_id, editor_id)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def insert_print(db_connection, db_cursor, print, edition_id):
-    query = "INSERT INTO print(?, ?)"
+def insert_print(db_cursor, print, edition_id):
+    query = "INSERT INTO print(partiture, edition) VALUES (?, ?)"
     values = (print, edition_id)
     db_cursor.execute(query, values)
-    db_connection.commit()
 
 
-def create_tables(db_connection, db_cursor, input_schema, output_db):
+def create_tables(db_cursor, input_schema, output_db):
     with open(input_schema, 'r') as sql_schema:
         tables = sql_schema.read()
         db_cursor.executescript(tables)
-        db_connection.commit()
+
+
+def persist_people(db_cursor, _print):
+    for editor in _print.edition.authors:
+        persist_person(db_cursor, editor)
+
+    for composer in _print.composition().authors:
+        persist_person(db_cursor, composer)
+
+
+def persist_person(db_cursor, person):
+    # check if person is in DB
+    query = "SELECT COUNT(*) FROM person WHERE person.name = ?"
+    db_cursor.execute(query, (person.name,))
+    if db_cursor.fetchone()[0] == 0:
+        insert_person(db_cursor, person)
 
 
 def main():
@@ -62,9 +79,13 @@ def main():
     db_curs = db_conn.cursor()
 
     sql_source_file = 'scorelib.sql'
-    create_tables(db_conn, db_curs, sql_source_file, output_db_filename)
+    create_tables(db_curs, sql_source_file, output_db_filename)
 
     prints = scorelib.load(input_source)
+    for p in prints:
+        persist_people(db_curs, p)
+
+    db_conn.commit()
 
 
 if __name__ == '__main__':
