@@ -10,8 +10,6 @@ def create_tables(db_cursor, input_schema, output_db):
         db_cursor.executescript(tables)
 
 
-
-
 def insert_voice(db_cursor, voice, score_id):
     query = "INSERT INTO voice VALUES(number, score, range, name) (?, ?, ?, ?)"
     values = (voice.number, score_id, voice.range, voice.name)
@@ -44,20 +42,15 @@ def insert_print(db_cursor, print, edition_id):
 
 def insert_score(db_cursor, score):
     query = """
-    INSERT INTO score(name, genre, key, incipt, year) VALUES (?, ?, ?, ?, ?)
+    INSERT INTO score(name, genre, key, incipit, year) VALUES (?, ?, ?, ?, ?)
     """
     values = (score.name, score.genre, score.key, score.incipit, score.year)
     db_cursor.execute(query, values)
     return db_cursor.lastrowid
 
 
-def persist_score(db_cursor, score):
-    query = "SELECT COUNT(*) FROM score WHERE score.name = ?"
-    db_cursor.execute(query, (score.name, ))
-
-
 def persist_print(db_cursor, _print):
-    persist_score(db_cursor, _print.composition())
+    score_id = insert_score(db_cursor, _print.composition())
 
     for editor in _print.edition.authors:
         editor_id = persist_person(db_cursor, editor)
