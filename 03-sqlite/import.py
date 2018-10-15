@@ -72,12 +72,6 @@ def persist_print(db_cursor, _print):
         insert_score_author(db_cursor, score_id, composer_id)
 
 
-def insert_person(db_cursor, person):
-    query = "INSERT INTO person(born, died, name) VALUES(?, ?, ?)"
-    values = (person.born, person.died, person.name)
-    db_cursor.execute(query, values)
-
-
 def persist_person(db_cursor, person):
     # check if person is in DB
     query = "SELECT COUNT(*) FROM person WHERE person.name = ?"
@@ -85,7 +79,10 @@ def persist_person(db_cursor, person):
     row = db_cursor.fetchone()[0]
     if row == 0:
         # person is not in a db
-        insert_person(db_cursor, person)
+        db_cursor.execute(
+            "INSERT INTO person(born, died, name) VALUES(?, ?, ?",
+            (person.born, person.died, person.name)
+        )
         return db_cursor.lastrowid
     else:
         # person is alraedy in db. try to update born+died
