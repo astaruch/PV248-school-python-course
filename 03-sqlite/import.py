@@ -11,45 +11,53 @@ def create_tables(db_cursor, input_schema, output_db):
 
 
 def insert_voice(db_cursor, number, voice, score_id):
-    query = """
-    INSERT INTO voice (number, score, range, name) VALUES (?, ?, ?, ?)
-    """
-    values = (number, score_id, voice.range, voice.name)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        "INSERT INTO voice (number, score, range, name) VALUES (?, ?, ?, ?)",
+        (number, score_id, voice.range, voice.name)
+    )
+    return db_cursor.lastrowid
 
 
 def insert_edition(db_cursor, edition, score_id):
-    query = "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)"
-    values = (score_id, edition.name, None)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)",
+        (score_id, edition.name, None)
+    )
     return db_cursor.lastrowid
 
 
 def insert_score_author(db_cursor, score_id, composer_id):
-    query = "INSERT INTO score_author(score, composer) VALUES (?, ?)"
-    values = (score_id, composer_id)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        "INSERT INTO score_author(score, composer) VALUES (?, ?)",
+        (score_id, composer_id)
+    )
+    return db_cursor.lastrowid
 
 
 def insert_edition_author(db_cursor, edition_id, editor_id):
-    query = "INSERT INTO edition_author(edition, editor) VALUES (?, ?)"
-    values = (edition_id, editor_id)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        "INSERT INTO edition_author(edition, editor) VALUES (?, ?)",
+        (edition_id, editor_id)
+    )
+    return db_cursor.lastrowid
 
 
 def insert_print(db_cursor, _print, edition_id):
-    query = "INSERT INTO print(partiture, edition) VALUES (?, ?)"
-    partiture = "Y" if _print.partiture else "N"
-    values = (partiture, edition_id)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        "INSERT INTO print(partiture, edition) VALUES (?, ?)",
+        ("Y" if _print.partiture else "N", edition_id)
+    )
+    return db_cursor.lastrowid
 
 
 def insert_score(db_cursor, score):
     query = """
     INSERT INTO score(name, genre, key, incipit, year) VALUES (?, ?, ?, ?, ?)
     """
-    values = (score.name, score.genre, score.key, score.incipit, score.year)
-    db_cursor.execute(query, values)
+    db_cursor.execute(
+        query,
+        (score.name, score.genre, score.key, score.incipit, score.year)
+    )
     return db_cursor.lastrowid
 
 
