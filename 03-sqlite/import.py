@@ -56,7 +56,8 @@ def score_in_db(db_cursor, score):
         s.key = ? AND s.incipit = ? AND s.year = ?)""",
         (score.name, score.genre, score.key, score.incipit, score.year)
     )
-    return db_cursor.fetchone()[0]
+    row = db_cursor.fetchone()
+    return None if row is None else row[0]
 
 
 def persist_score(db_cursor, score):
@@ -105,7 +106,7 @@ def persist_person(db_cursor, person):
     if row == 0:
         # person is not in a db
         db_cursor.execute(
-            "INSERT INTO person(born, died, name) VALUES(?, ?, ?",
+            "INSERT INTO person(born, died, name) VALUES(?, ?, ?)",
             (person.born, person.died, person.name)
         )
         return db_cursor.lastrowid
