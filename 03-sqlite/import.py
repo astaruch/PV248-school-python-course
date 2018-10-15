@@ -62,9 +62,8 @@ def score_in_db(db_cursor, score):
 
 def edition_in_db(db_cursor, edition, score_id):
     db_cursor.execute(
-        """SELECT id FROM edition AS e WHERE (e.score = ? AND e.name = ? AND
-        e.year = ?)""",
-        (score_id, edition.name, edition.year)
+        "SELECT id FROM edition AS e WHERE (e.score = ? AND e.name = ?)",
+        (score_id, edition.name)
     )
     row = db_cursor.fetchone()
     return None if row is None else row[0]
