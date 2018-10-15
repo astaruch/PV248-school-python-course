@@ -94,17 +94,13 @@ def persist_person(db_cursor, person):
         row = db_cursor.fetchone()
         person_id = row[0]
         born = row[1]
-        died = row[2]
-        new_born = None
-        new_died = None
         if born is None and person.born is not None:
-            new_born = person.born
+            db_cursor.execute("UPDATE person SET born = ? WHERE name = ?",
+                              (person.born, person.name))
+        died = row[2]
         if died is None and person.died is not None:
-            new_died = person.died
-        if new_born is not None or new_died is not None:
-            query = "UPDATE person SET born = ?, died = ? WHERE name = ?"
-            db_cursor.execute(query, (new_born, new_died, person.name,))
-            print("{}. updating born/died for {}".format(person_id, person.name))
+            db_cursor.execute("UPDATE person SET died = ? WHERE name = ?",
+                              (person.died, person.name))
         return person_id
 
 
