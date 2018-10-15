@@ -60,6 +60,24 @@ def score_in_db(db_cursor, score):
     return None if row is None else row[0]
 
 
+def edition_in_db(db_cursor, edition, score_id):
+    db_cursor.execute(
+        """SELECT id FROM edition AS e WHERE (e.score = ? AND e.name = ? AND
+        e.year = ?)""",
+        (score_id, edition.name, edition.year)
+    )
+    row = db_cursor.fetchone()
+    return None if row is None else row[0]
+
+
+def persist_edition(db_cursor, edition, score_id):
+    edition_id = edition_in_db(db_cursor, edition, score_id)
+    if not edition_id:
+        return insert_edition(db_cursor, edition, score_id)
+    else:
+        return edition_id
+
+
 def persist_score(db_cursor, score):
     score_id = score_in_db(db_cursor, score)
     if not score_id:
@@ -82,7 +100,7 @@ def insert_score(db_cursor, score):
 def persist_print(db_cursor, _print):
     score_id = persist_score(db_cursor, _print.composition())
 
-    edition_id = insert_edition(db_cursor, _print.edition, score_id)
+    edition_id = persist_edition(db_cursor, _print.edition, score_id)
 
     insert_print(db_cursor, _print, edition_id)
 
@@ -133,14 +151,14 @@ def main():
     if os.path.isfile(output_db_filename):
         os.remove(output_db_filename)
     db_conn = sqlite3.connect(output_db_filename)
-    db_curs = db_conn.cursor()
+    db_cursor = db_conn.cursor()
 
     sql_source_file = 'scorelib.sql'
-    create_tables(db_curs, sql_source_file, output_db_filename)
+    create_tables(db_cursor, sql_source_file, output_db_filename)
 
     prints = scorelib.load(input_source)
     for p in prints:
-        persist_print(db_curs, p)
+        persist_print(db_cursor, p)
 
     db_conn.commit()
 
