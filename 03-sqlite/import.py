@@ -50,6 +50,23 @@ def insert_print(db_cursor, _print, edition_id):
     return db_cursor.lastrowid
 
 
+def score_in_db(db_cursor, score):
+    db_cursor.execute(
+        """SELECT id FROM score AS s WHERE (s.name = ? AND s.genre = ? AND
+        s.key = ? AND s.incipit = ? AND s.year = ?)""",
+        (score.name, score.genre, score.key, score.incipit, score.year)
+    )
+    return db_cursor.fetchone()[0]
+
+
+def persist_score(db_cursor, score):
+    score_id = score_in_db(db_cursor, score)
+    if not score_id:
+        return insert_score(db_cursor, score)
+    else:
+        return score_id
+
+
 def insert_score(db_cursor, score):
     query = """
     INSERT INTO score(name, genre, key, incipit, year) VALUES (?, ?, ?, ?, ?)
@@ -62,7 +79,7 @@ def insert_score(db_cursor, score):
 
 
 def persist_print(db_cursor, _print):
-    score_id = insert_score(db_cursor, _print.composition())
+    score_id = persist_score(db_cursor, _print.composition())
 
     edition_id = insert_edition(db_cursor, _print.edition, score_id)
 
