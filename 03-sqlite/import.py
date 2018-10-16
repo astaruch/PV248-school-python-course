@@ -36,8 +36,8 @@ def insert_edition_author(db_cursor, edition_id, editor_id):
 
 def persist_print(db_cursor, _print, edition_id):
     db_cursor.execute(
-        "INSERT INTO print(partiture, edition) VALUES (?, ?)",
-        ("Y" if _print.partiture else "N", edition_id)
+        "INSERT INTO print(id, partiture, edition) VALUES (?, ?, ?)",
+        (_print.print_id, "Y" if _print.partiture else "N", edition_id)
     )
     return db_cursor.lastrowid
 
