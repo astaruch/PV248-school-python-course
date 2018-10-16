@@ -216,7 +216,11 @@ def load(filename):
                 if editor_line:
                     editors_substrings = editor_line.split(',')
                     if len(editors_substrings) == 2:
-                        for editor in editors_substrings:
+                        if ' ' in editors_substrings[0]:
+                            for editor in editors_substrings:
+                                edition.add_author(editor, None, None)
+                        else:
+                            editor = ','.join(editors_substrings)
                             edition.add_author(editor, None, None)
                     elif len(editors_substrings) % 2 == 0:
                         name = ''
