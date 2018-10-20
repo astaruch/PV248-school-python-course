@@ -3,7 +3,7 @@ import re
 
 
 class Print:
-    def __init__(self, print_id, edition, partiture):
+    def __init__(self, edition, partiture, print_id=None):
         self.edition = edition
         self.print_id = int(print_id.strip()) if print_id else None
         self.partiture = partiture
@@ -44,6 +44,14 @@ class Edition:
         self.authors = []
         self.name = name.strip() if name else None
 
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return (self.composition == other.composition and
+                self.authors == other.authors and
+                self.name == other.name)
+
     def add_author(self, name, born, died):
         self.authors.append(Person(name, born, died))
 
@@ -64,6 +72,17 @@ class Composition:
         self.voices = []
         self.authors = []
 
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return (self.name == other.name and
+                self.incipit == other.incipit and
+                self.key == other.key and
+                self.genre == other.genre and
+                self.voices == other.voices and
+                self.authors == other.authors)
+
     def add_voice(self, voice_range, name):
         self.voices.append(Voice(voice_range, name))
 
@@ -82,6 +101,14 @@ class Voice:
         self.range = voice_range.strip() if voice_range else None
         self.name = name.strip() if name else None
 
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return (self.name == other.name and
+                self.range == other.range and
+                self.number == other.number)
+
     def format(self):
         return '; '.join(filter(None, [self.range, self.name]))
 
@@ -91,6 +118,14 @@ class Person:
         self.name = name.strip() if name else None
         self.born = None if (not born or born == '') else int(born)
         self.died = None if (not died or died == '') else int(died)
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return (self.name == other.name and
+                self.born == other.born and
+                self.died == other.died)
 
     def format(self):
         output = self.name
@@ -234,7 +269,7 @@ def load(filename):
                     else:
                         edition.add_author(editors_substrings[0], None, None)
 
-                record = Print(print_id, edition, partiture)
+                record = Print(edition, partiture, print_id)
 
                 prints.append(record)
 

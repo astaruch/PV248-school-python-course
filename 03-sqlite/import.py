@@ -10,7 +10,7 @@ def create_tables(db_cursor, input_schema, output_db):
         db_cursor.executescript(tables)
 
 
-def insert_voice(db_cursor, number, voice, score_id):
+def persist_voice(db_cursor, number, voice, score_id):
     db_cursor.execute(
         "INSERT INTO voice (number, score, range, name) VALUES (?, ?, ?, ?)",
         (number, score_id, voice.range, voice.name)
@@ -18,7 +18,7 @@ def insert_voice(db_cursor, number, voice, score_id):
     return db_cursor.lastrowid
 
 
-def insert_score_author(db_cursor, score_id, composer_id):
+def persist_score_author(db_cursor, score_id, composer_id):
     db_cursor.execute(
         "INSERT INTO score_author(score, composer) VALUES (?, ?)",
         (score_id, composer_id)
@@ -26,7 +26,7 @@ def insert_score_author(db_cursor, score_id, composer_id):
     return db_cursor.lastrowid
 
 
-def insert_edition_author(db_cursor, edition_id, editor_id):
+def persist_edition_author(db_cursor, edition_id, editor_id):
     db_cursor.execute(
         "INSERT INTO edition_author(edition, editor) VALUES (?, ?)",
         (edition_id, editor_id)
@@ -42,98 +42,78 @@ def persist_print(db_cursor, _print, edition_id):
     return db_cursor.lastrowid
 
 
-def score_in_db(db_cursor, score):
-    db_cursor.execute(
-        """SELECT id FROM score AS s WHERE (s.name = ? AND s.genre = ? AND
-        s.key = ? AND s.incipit = ? AND s.year = ?)""",
-        (score.name, score.genre, score.key, score.incipit, score.year)
-    )
-    row = db_cursor.fetchone()
-    return None if row is None else row[0]
-
-
-def persist_edition(db_cursor, edition, score_id):
-    db_cursor.execute(
-        "SELECT id FROM edition AS e WHERE (e.score = ? AND e.name = ?)",
-        (score_id, edition.name)
-    )
-    row = db_cursor.fetchone()
-    edition_id = None if row is None else row[0]
-    if not edition_id:
-        db_cursor.execute(
-            "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)",
-            (score_id, edition.name, None)
-        )
-        return db_cursor.lastrowid
-    else:
-        return edition_id
-
-
-def persist_person(db_cursor, person):
-    # check if person is in DB
-    query = "SELECT COUNT(*) FROM person WHERE person.name = ?"
-    db_cursor.execute(query, (person.name,))
-    row = db_cursor.fetchone()[0]
-    if row == 0:
-        # person is not in a db
-        db_cursor.execute(
-            "INSERT INTO person(born, died, name) VALUES(?, ?, ?)",
-            (person.born, person.died, person.name)
-        )
-        return db_cursor.lastrowid
-    else:
-        # person is alraedy in db. try to update born+died
-        query = "SELECT id, born, died FROM person WHERE person.name = ?"
-        db_cursor.execute(query, (person.name,))
-        row = db_cursor.fetchone()
-        person_id = row[0]
-        born = row[1]
-        if born is None and person.born is not None:
-            db_cursor.execute("UPDATE person SET born = ? WHERE name = ?",
-                              (person.born, person.name))
-        died = row[2]
-        if died is None and person.died is not None:
-            db_cursor.execute("UPDATE person SET died = ? WHERE name = ?",
-                              (person.died, person.name))
-        return person_id
-
-
-def persist_score(db_cursor, score):
-    db_cursor.execute(
-        """SELECT id FROM score AS s WHERE (s.name = ? AND s.genre = ? AND
-        s.key = ? AND s.incipit = ? AND s.year = ?)""",
-        (score.name, score.genre, score.key, score.incipit, score.year)
-    )
-    row = db_cursor.fetchone()
-    score_id = None if row is None else row[0]
-    if not score_id:
+def persist_score(db_cursor, score, persisted_scores):
+    if score not in persisted_scores:
         db_cursor.execute(
             """INSERT INTO score(name, genre, key, incipit, year)
             VALUES (?, ?, ?, ?, ?)""",
             (score.name, score.genre, score.key, score.incipit, score.year)
         )
-        return db_cursor.lastrowid
-    else:
+        score_id = db_cursor.lastrowid
+        if score_id == 666 or score_id == 667:
+            print(score)
+        persisted_scores[score] = score_id
         return score_id
+    else:
+        return persisted_scores[score]
 
 
-def persist_one_record(db_cursor, _print):
-    score_id = persist_score(db_cursor, _print.composition())
+def persist_edition(db_cursor, edition, score_id, persisted_editions):
+    if edition not in persisted_editions:
+        db_cursor.execute(
+            "INSERT INTO edition(score, name, year) VALUES (?, ?, ?)",
+            (score_id, edition.name, None)
+        )
+        edition_id = db_cursor.lastrowid
+        persisted_editions[edition] = edition_id
+        return edition_id
+    else:
+        return persisted_editions[edition]
 
-    edition_id = persist_edition(db_cursor, _print.edition, score_id)
 
-    persist_print(db_cursor, _print, edition_id)
+def persist_person(db_cursor, person, persisted_people):
+    if person.name not in persisted_people:
+        db_cursor.execute(
+            "INSERT INTO person(born, died, name) VALUES(?, ?, ?)",
+            (person.born, person.died, person.name)
+        )
+        person_id = db_cursor.lastrowid
+        persisted_people[person.name] = person_id
+        return person_id
+    else:
+        if person.born is not None:
+            db_cursor.execute("UPDATE person SET born = ? WHERE name = ?",
+                              (person.born, person.name))
+        if person.died is not None:
+            db_cursor.execute("UPDATE person SET died = ? WHERE name = ?",
+                              (person.died, person.name))
+        return persisted_people[person.name]
 
-    for index, voice in enumerate(_print.composition().voices):
-        insert_voice(db_cursor, index + 1, voice, score_id)
 
-    for editor in _print.edition.authors:
-        editor_id = persist_person(db_cursor, editor)
-        insert_edition_author(db_cursor, edition_id, editor_id)
+def persist_records(db_cursor, records):
+    persisted_scores = dict()
+    persisted_editions = dict()
+    persisted_people = dict()
+    for record in records:
+            score_id = persist_score(db_cursor, record.composition(),
+                                     persisted_scores)
 
-    for composer in _print.composition().authors:
-        composer_id = persist_person(db_cursor, composer)
-        insert_score_author(db_cursor, score_id, composer_id)
+            edition_id = persist_edition(db_cursor, record.edition, score_id,
+                                         persisted_editions)
+
+            persist_print(db_cursor, record, edition_id)
+
+            for index, voice in enumerate(record.composition().voices):
+                persist_voice(db_cursor, index + 1, voice, score_id)
+
+            for editor in record.edition.authors:
+                editor_id = persist_person(db_cursor, editor, persisted_people)
+                persist_edition_author(db_cursor, edition_id, editor_id)
+
+            for composer in record.composition().authors:
+                composer_id = persist_person(db_cursor, composer,
+                                             persisted_people)
+                persist_score_author(db_cursor, score_id, composer_id)
 
 
 def main():
@@ -148,8 +128,7 @@ def main():
     create_tables(db_cursor, sql_source_file, output_db_filename)
 
     records = scorelib.load(input_source)
-    for record in records:
-        persist_one_record(db_cursor, record)
+    persist_records(db_cursor, records)
 
     db_conn.commit()
 
