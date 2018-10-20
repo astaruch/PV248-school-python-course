@@ -44,13 +44,15 @@ class Edition:
         self.authors = []
         self.name = name.strip() if name else None
 
-    def __hash__(self):
-        return hash(str(self))
-
     def __eq__(self, other):
+        a1 = sorted(self.authors, key=lambda k: (k.name, k.born, k.died))
+        a2 = sorted(other.authors, key=lambda k: (k.name, k.born, k.died))
         return (self.composition == other.composition and
-                self.authors == other.authors and
-                self.name == other.name)
+                self.name == other.name and
+                a1 == a2)
+
+    def __hash__(self) -> int:
+        return hash((self.composition, frozenset(self.authors), self.name))
 
     def add_author(self, name, born, died):
         self.authors.append(Person(name, born, died))
@@ -72,16 +74,23 @@ class Composition:
         self.voices = []
         self.authors = []
 
-    def __hash__(self):
-        return hash(str(self))
-
     def __eq__(self, other):
+        v1 = sorted(self.voices, key=lambda k: (k.name, k.range))
+        v2 = sorted(other.voices, key=lambda k: (k.name, k.range))
+        a1 = sorted(self.authors, key=lambda k: (k.name, k.born, k.died))
+        a2 = sorted(other.authors, key=lambda k: (k.name, k.born, k.died))
         return (self.name == other.name and
                 self.incipit == other.incipit and
                 self.key == other.key and
                 self.genre == other.genre and
-                self.voices == other.voices and
-                self.authors == other.authors)
+                self.year == other.year and
+                v1 == v2 and
+                a1 == a2)
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.incipit, self.key, self.genre, self.year,
+                     frozenset(self.voices),
+                     frozenset(self.authors)))
 
     def add_voice(self, voice_range, name):
         self.voices.append(Voice(voice_range, name))
@@ -101,13 +110,11 @@ class Voice:
         self.range = voice_range.strip() if voice_range else None
         self.name = name.strip() if name else None
 
-    def __hash__(self):
-        return hash(str(self))
-
     def __eq__(self, other):
-        return (self.name == other.name and
-                self.range == other.range and
-                self.number == other.number)
+        return (self.name, self.range) == (other.name, other.range)
+
+    def __hash__(self):
+        return hash((self.name, self.range))
 
     def format(self):
         return '; '.join(filter(None, [self.range, self.name]))
@@ -119,13 +126,12 @@ class Person:
         self.born = None if (not born or born == '') else int(born)
         self.died = None if (not died or died == '') else int(died)
 
-    def __hash__(self):
-        return hash(str(self))
-
     def __eq__(self, other):
-        return (self.name == other.name and
-                self.born == other.born and
-                self.died == other.died)
+        return ((self.name, self.born, self.died) ==
+                (other.name, other.born, other.died))
+
+    def __hash__(self):
+        return hash((self.name, self.born, self.died))
 
     def format(self):
         output = self.name

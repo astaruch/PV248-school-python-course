@@ -50,8 +50,6 @@ def persist_score(db_cursor, score, persisted_scores):
             (score.name, score.genre, score.key, score.incipit, score.year)
         )
         score_id = db_cursor.lastrowid
-        if score_id == 666 or score_id == 667:
-            print(score)
         persisted_scores[score] = score_id
         return score_id
     else:
