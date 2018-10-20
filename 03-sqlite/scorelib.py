@@ -3,7 +3,7 @@ import re
 
 
 class Print:
-    def __init__(self, edition, partiture, print_id=None):
+    def __init__(self, edition, partiture, print_id):
         self.edition = edition
         self.print_id = int(print_id.strip()) if print_id else None
         self.partiture = partiture
