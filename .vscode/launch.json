@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/03-sqlite",
-            "args": ["scorelib.txt", "scorelib.dat"]
+            "cwd": "${workspaceFolder}/04-json",
+            "args": ["645"]
         },
         {
             "name": "Python: Attach",
