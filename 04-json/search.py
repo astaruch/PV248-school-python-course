@@ -48,6 +48,8 @@ def main():
                 one_print['Incipit'] = score_incipit
             if score_year:
                 one_print['Composition Year'] = score_year
+            if edition_name:
+                one_print['Edition'] = edition_name
 
             editors_db = db_cursor.execute(
                 """SELECT DISTINCT person.id, person.name, person.born,
