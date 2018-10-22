@@ -13,7 +13,11 @@ def main():
         INNER JOIN score ON edition.score = score.id
         WHERE print.id = ?""",
         (print_number,)
-    ).fetchall()[0][0]
+    ).fetchall()
+    if not score_id:
+        return
+    else:
+        score_id = score_id[0][0]
     composers_db = db_cursor.execute(
         """SELECT name, born, died FROM score_author
         INNER JOIN person ON score_author.composer = person.id
