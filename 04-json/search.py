@@ -52,15 +52,15 @@ def main():
                 one_print['Edition'] = edition_name
 
             editors_db = db_cursor.execute(
-                """SELECT DISTINCT person.id, person.name, person.born,
-                      person.died FROM person
+                """SELECT DISTINCT person.name, person.born,
+                        person.died FROM person
                     JOIN edition_author ON edition_author.editor = person.id
                     JOIN edition ON edition_author.edition = edition.id
                     WHERE edition.id = ?""",
                 (edition_id,)
             ).fetchall()
             editors = []
-            for editor_id, editor_name, editor_born, editor_died in editors_db:
+            for editor_name, editor_born, editor_died in editors_db:
                 editor = dict()
                 if editor_name:
                     editor['name'] = editor_name
@@ -75,8 +75,8 @@ def main():
 
             print_composers_db = db_cursor.execute(
                 """SELECT DISTINCT person.name, person.born,
-                    person.died FROM person
-                    JOIN score_author ON person.id = score_author.composer
+                        person.died FROM person
+                    JOIN score_author ON score_author.composer = person.id
                     WHERE score_author.score = ?""",
                 (score_id,)
             ).fetchall()
@@ -113,7 +113,7 @@ def main():
             prints.append(one_print)
         composers[composer_name] = prints
 
-    print(json.dumps(composers, indent=4, ensure_ascii=False))
+    print(json.dumps(composers, indent=2, ensure_ascii=False))
     db_connection.close()
 
 
