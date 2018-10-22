@@ -30,7 +30,7 @@ def main():
         if composer[2]:
             person['died'] = composer[2]
         composers.append(person)
-    print(json.dumps(composers, indent=4, ensure_ascii=False))
+    print(json.dumps(composers, indent=2, ensure_ascii=False))
     db_connection.close()
 
 

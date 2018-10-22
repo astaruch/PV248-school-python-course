@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/04-json",
-            "args": ["645"]
+            "args": ["Bach"]
         },
         {
             "name": "Python: Attach",
