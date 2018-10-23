@@ -71,7 +71,7 @@ def main():
                 if editor:
                     editors.append(editor)
             if len(editors) > 0:
-                one_print['Editors'] = editors
+                one_print['Editor'] = editors
 
             print_composers_db = db_cursor.execute(
                 """SELECT DISTINCT person.name, person.born,
