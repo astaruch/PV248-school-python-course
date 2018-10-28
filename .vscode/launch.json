@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/04-json",
-            "args": ["Bach"]
+            "cwd": "${workspaceFolder}/05-numpy",
+            "args": ["scorelib.txt", "scorelib.dat"]
         },
         {
             "name": "Python: Attach",
