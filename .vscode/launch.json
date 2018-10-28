@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/05-numpy",
-            "args": ["no-solution.txt"]
+            "args": ["multiple-solution.txt"]
         },
         {
             "name": "Python: Attach",

@@ -80,8 +80,13 @@ def main():
             print('solution: {}'.format(', '.join(str_solutions)))
         except numpy.linalg.LinAlgError:
             rank = numpy.linalg.matrix_rank(np_coefficients)
-            print('solution space dimension: {}'.format(
-                len(distinct_variables) - rank))
+            space_dimension = len(distinct_variables) - rank
+            augmented = numpy.column_stack((np_coefficients, np_constants))
+            augmented_rank = numpy.linalg.matrix_rank(augmented)
+            if rank != augmented_rank:
+                print('no solution')
+            else:
+                print('solution space dimension: {}'.format(space_dimension))
 
 
 if __name__ == '__main__':
