@@ -71,8 +71,17 @@ def main():
 
         np_coefficients = numpy.array(list_of_coefficients)
         np_constants = numpy.array(constants)
-        solved = numpy.linalg.solve(np_coefficients, np_constants)
-        print(solved)
+        try:
+            solved = numpy.linalg.solve(np_coefficients, np_constants)
+            str_solutions = []
+            for (idx, variable) in enumerate(distinct_variables):
+                str_solution = variable + ' = ' + str(solved[idx])
+                str_solutions.append(str_solution)
+            print('solution: {}'.format(', '.join(str_solutions)))
+        except numpy.linalg.LinAlgError:
+            rank = numpy.linalg.matrix_rank(np_coefficients)
+            print('solution space dimension: {}'.format(
+                len(distinct_variables) - rank))
 
 
 if __name__ == '__main__':
