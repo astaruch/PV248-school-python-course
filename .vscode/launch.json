@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/05-numpy",
-            "args": ["eq4.txt"]
+            "cwd": "${workspaceFolder}/06-sound",
+            "args": ["Mono_random.wav"]
         },
         {
             "name": "Python: Attach",
