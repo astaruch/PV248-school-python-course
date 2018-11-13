@@ -32,7 +32,7 @@ def frequency_to_pitch(base_pitch, frequency):
     else:
         octave_suffix = ',' * octave_index
 
-    return "{}{}{}".format(tone_name, octave_suffix, cents)
+    return "{}{}{:+d}".format(tone_name, octave_suffix, cents)
 
 
 def peak_clustering(peaks):
@@ -91,7 +91,6 @@ def get_peaks(window):
 def main():
     standard_pitch = int(argv[1])
     filename = argv[2]
-    print(frequency_to_pitch(standard_pitch, 115))
 
     with wave.open(filename, 'rb') as wav_file:
         channels = wav_file.getnchannels()
