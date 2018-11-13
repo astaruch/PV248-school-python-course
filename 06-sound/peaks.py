@@ -40,7 +40,7 @@ def main():
     with wave.open(filename, 'rb') as wav_file:
         # number_of_samples = wav_file.getnframes() / wav_file.getframerate()
         framerate = wav_file.getframerate()
-        mono = True if wav_file.getnchannels == 1 else False
+        mono = True if wav_file.getnchannels() == 1 else False
         data = wav_file.readframes(wav_file.getnframes())
     low = np.inf
     high = -np.inf
