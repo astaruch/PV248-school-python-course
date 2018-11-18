@@ -144,8 +144,21 @@ def main():
                 window_end += 0.1
 
         # print(fin)
-        for l in fin:
-            print('%.1f-%.1f %s' % (l['start'], l['end'], l['line']))
+        if fin:
+            group_start = fin[0]['start']
+            group_end = fin[0]['end']
+            group_info = fin[0]['line']
+            for l in fin:
+                if group_info != l['line']:
+                    print('%.1f-%.1f %s' % (group_start, group_end, group_info))
+                    group_start = l['start']
+                    group_end = l['end']
+                    group_info = l['line']
+                else:
+                    group_end = l['end']
+            print('%.1f-%.1f %s' % (group_start, group_end, group_info))
+
+
 
 
 if __name__ == '__main__':
