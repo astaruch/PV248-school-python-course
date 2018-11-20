@@ -3,6 +3,7 @@ import csv
 import json
 import numpy as np
 from datetime import datetime, date
+from math import ceil
 
 
 def main():
@@ -44,19 +45,21 @@ def main():
                     per_exercise[ex] += float(v)
                 else:
                     per_exercise[ex] = float(v)
-
+        # print(per_date)
         points = []
         dates = []
         for v in per_exercise.values():
             points.append(v)
         dates = [(k,v) for k,v in per_date.items()]
         start_date = datetime.strptime("2018-09-17",'%Y-%m-%d').date().toordinal()
+        # print(points)
 
         d = []
         p = []
         for k, v in sorted(dates, key = lambda k: k[0]):
             p.append(v)
             d.append(datetime.strptime(k, '%Y-%m-%d').date().toordinal() - start_date)
+        # print(p)
 
         for idx in range(1, len(p)):
             p[idx] += p[idx-1]
@@ -64,13 +67,13 @@ def main():
         reg= np.linalg.lstsq([[d1] for d1 in d], p, rcond=None)[0].item()
         st = {}
         st["regression slope"] = reg
-        st["passed"] = np.where(np.array(p) > 0)[0].size
-        st["median"] = np.median(np.array(p))
-        st["mean"] = np.mean(np.array(p))
-        st["total"] = np.sum(np.array(p))
+        st["passed"] = np.where(np.array(points) > 0)[0].size
+        st["median"] = np.median(np.array(points))
+        st["mean"] = np.mean(np.array(points))
+        st["total"] = np.sum(np.array(points))
         if reg != 0:
-            st["date 16"] = str(datetime.fromordinal(start_date + int(16 / reg)).date())
-            st["date 20"] = str(datetime.fromordinal(start_date + int(20 / reg)).date())
+            st["date 16"] = str(datetime.fromordinal((start_date + ceil(16 / reg))).date())
+            st["date 20"] = str(datetime.fromordinal((start_date + ceil(20 / reg))).date())
 
         print(json.dumps(st, indent=4))
 
