@@ -4,12 +4,11 @@ import wave
 import struct
 import numpy as np
 
-notes = ['c', 'cis', 'd', 'dis', 'e', 'f', 'fis', 'g', 'gis', 'a', 'bes', 'b']
+notes = ["c", "cis", "d", "es", "e", "f", "fis", "g", "gis", "a", "bes", "b"]
 
 
 def frequency_to_pitch(base_pitch, frequency):
     octave_length = 12
-    # (middle C) = 69 + x => x = -9/12
     scaled = base_pitch * pow(2, - (octave_length + 9)/octave_length)
     distance = octave_length * (log2(frequency) - log2(scaled))
 
@@ -26,11 +25,11 @@ def frequency_to_pitch(base_pitch, frequency):
         tone_index -= octave_length
         octave_index += 1
 
-    tone_name = notes[tone_index]
+    tone_name = notes[tone_index].title() if tone_index in (0, 1, 2) else notes[tone_index]
     if octave_index >= 0:
         octave_suffix = "'" * octave_index
     else:
-        octave_suffix = ',' * octave_index
+        octave_suffix = ',' * ((-1 * octave_index) - 1)
 
     return "{}{}{:+d}".format(tone_name, octave_suffix, cents)
 
