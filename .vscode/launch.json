@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/08-stats",
-            "args": ["points.csv", "exercises"]
+            "args": ["points.csv", "average"]
         },
         {
             "name": "Python: Attach",
