@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/07-music",
-            "args": ["415", "8000.220-880.wav"]
+            "cwd": "${workspaceFolder}/08-stats",
+            "args": ["points.csv", "exercises"]
         },
         {
             "name": "Python: Attach",
