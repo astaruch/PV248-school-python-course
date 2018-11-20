@@ -25,12 +25,12 @@ def frequency_to_pitch(base_pitch, frequency):
         tone_index -= octave_length
         octave_index += 1
 
-    tone_name = notes[tone_index].title() if tone_index in (0, 1, 2) else notes[tone_index]
+    tone_name = notes[tone_index]
     if octave_index >= 0:
         octave_suffix = "'" * octave_index
     else:
         octave_suffix = ',' * ((-1 * octave_index) - 1)
-
+        tone_name = tone_name.title()
     return "{}{}{:+d}".format(tone_name, octave_suffix, cents)
 
 
