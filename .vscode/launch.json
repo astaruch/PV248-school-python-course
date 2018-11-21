@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/08-stats",
-            "args": ["points.csv", "average"]
+            "cwd": "${workspaceFolder}/09-http-requests",
+            "args": ["9001", "httpbin.org"]
         },
         {
             "name": "Python: Attach",
