@@ -1,8 +1,7 @@
 from sys import argv
 import socket
 # from time import sleep
-import http.server
-import socketserver
+import re
 
 def main():
     if len(argv) != 3:
@@ -31,6 +30,14 @@ def main():
                     break
             elif request[:4] == POST:
                 print('It is a POST request')
+                print('Finding content length')
+                content_length = re.search(b'content-length: (\d+)', request).group(1).decode('utf-8')
+                print(int(content_length))
+                content_length = int(content_length)
+                request_body = request[-content_length:]
+                print(request_body)
+                print(request_body.decode('utf-8'))
+                break
         data = clientsocket.recv(1024)
         if data:
             request.extend(data)
