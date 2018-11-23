@@ -1,9 +1,8 @@
 from sys import argv
 import socket
-# from time import sleep
 import re
 import json
-
+import urllib.request
 
 def main():
     if len(argv) != 3:
@@ -53,19 +52,52 @@ def main():
         request_body_json = json.loads(request_body)
         print(request_body_json)
 
+    """ POST request
+    {
+        "type": "GET",
+        "url": "http://postman-echo.com",
+        "headers:
+        {
+            "Postman-Token": "a3874e99-e4b8-48ee-9584-a181f75b5583"
+            "Content-Type": "text/plain"
+            "User-Agent": "PostmanRuntime/7.4.0",
+            "accept-encoding": "gzip, deflate",
+            "Connection": "keep-alive"
+
+        }
+    }
+    """
     print('Connecting to upstream...')
-    upstream_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    upstream_socket.connect((upstream, 80))
-    print('Sending...')
-    upstream_socket.sendall(request)
-    response = bytearray()
-    while True:
-        data = upstream_socket.recv(1024)
-        if data:
-            response.extend(data)
-        else:
-            print("I shouldnt be here")
-    print(response.decode('utf-8'))
+    url = 'http://' + upstream
+    response = urllib.request.urlopen(url)
+    response_dict = {}
+    response_dict['code'] = response.status
+    response_dict['headers'] = dict(response.getheaders())
+    response_content = response.read().decode('utf-8')
+    try:
+        response_body = json.loads(response_content)
+        response_dict['json'] = response_body
+    except ValueError:
+        response_dict['content'] = response_content
+    print(response_dict)
+    response_json = json.dumps(response_dict)
+    response_json_json = json.loads(response_json)
+    response_bytes = bytearray()
+    response_bytes.extend(response_json.encode('utf-8'))
+    clientsocket.sendall(response_bytes)
+    clientsocket.close()
+    # upstream_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # upstream_socket.connect((upstream, 80))
+    # print('Sending...')
+    # upstream_socket.sendall(request)
+    # response = bytearray()
+    # while True:
+    #     data = upstream_socket.recv(1024)
+    #     if data:
+    #         response.extend(data)
+    #         print(response.decode('utf-8'))
+    #     else:
+    #         print("I shouldnt be here")
 
 
 if __name__ == '__main__':
