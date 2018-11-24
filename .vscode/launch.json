@@ -13,7 +13,7 @@
             // "cwd": "${workspaceFolder}/08-stats",
             // "args": ["points.csv", "dates"]
             "cwd": "${workspaceFolder}/09-http-requests",
-            "args": ["9001", "postman-echo.com"]
+            "args": ["9001", "postman-echo.com/get"]
         },
         {
             "name": "Python: Attach",
