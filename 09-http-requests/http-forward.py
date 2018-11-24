@@ -4,6 +4,7 @@ import re
 import json
 import urllib.request
 
+
 def main():
     if len(argv) != 3:
         print('Enter port and server!')
@@ -34,7 +35,8 @@ def main():
                 request_method = 'POST'
                 print('It is a POST request...')
                 print('Finding content length')
-                content_length = re.search(b'content-length: (\\d+)', request).group(1).decode('utf-8')
+                content_length = re.search(b'content-length: (\\d+)',
+                                           request).group(1).decode('utf-8')
                 print(int(content_length))
                 content_length = int(content_length)
                 request_body = request[-content_length:].decode('utf-8')
@@ -49,58 +51,68 @@ def main():
     request_decoded = request.decode('utf-8')
     print(request_decoded)
     if (request_method == 'POST'):
-        request_body_json = json.loads(request_body)
-        print(request_body_json)
-
-    """ POST request
-    {
-        "type": "GET",
-        "url": "http://postman-echo.com",
-        "headers:
+        """
         {
-            "Postman-Token": "a3874e99-e4b8-48ee-9584-a181f75b5583"
-            "Content-Type": "text/plain"
-            "User-Agent": "PostmanRuntime/7.4.0",
-            "accept-encoding": "gzip, deflate",
-            "Connection": "keep-alive"
-
+            "type": "GET",
+            "url": "http://postman-echo.com/get",
+            "headers":
+            {
+                "X-test": "python",
+                "X-test345": 123
+            },
+            "timeout": 5
         }
-    }
-    """
-    print('Connecting to upstream...')
-    url = 'http://' + upstream
-    response = urllib.request.urlopen(url)
-    response_dict = {}
-    response_dict['code'] = response.status
-    response_dict['headers'] = dict(response.getheaders())
-    response_content = response.read().decode('utf-8')
-    try:
-        response_body = json.loads(response_content)
-        response_dict['json'] = response_body
-    except ValueError:
-        response_dict['content'] = response_content
-    print(response_dict)
-    response_json = json.dumps(response_dict)
-    response_json_json = json.loads(response_json)
-    response_bytes = bytearray()
-    response_bytes.extend("HTTP/1.1 200 OK\n".encode())
-    response_bytes.extend("Content-Type: application/json\n".encode())
-    response_bytes.extend("\n".encode())
-    response_bytes.extend(response_json.encode())
-    clientsocket.sendall(response_bytes)
-    clientsocket.close()
-    # upstream_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # upstream_socket.connect((upstream, 80))
-    # print('Sending...')
-    # upstream_socket.sendall(request)
-    # response = bytearray()
-    # while True:
-    #     data = upstream_socket.recv(1024)
-    #     if data:
-    #         response.extend(data)
-    #         print(response.decode('utf-8'))
-    #     else:
-    #         print("I shouldnt be here")
+        """
+        in_request = json.loads(request_body)
+        out_request_type = in_request["type"]
+        out_request_url = in_request["url"]
+        out_request_headers = in_request["headers"]
+        if out_request_type == "POST":
+            out_request_type = in_request["content"]
+        timeout = in_request["timeout"]
+        print(in_request)
+        print('Connecting to upstream...')
+        out_request = bytearray()
+        out_request.extend(("{} {} HTTP/1.1\n"
+                            .format(out_request_type, out_request_url)
+                            ).encode())
+        print(out_request_headers.type)
+        for header_name, value in out_request_headers.items():
+            out_request.extend(("{}: {}\n".format(header_name, value)).encode())
+        ## GET
+        response = urllib.request.Request(url=out_request_url,
+
+            )
+        exit
+    else:
+        # GET
+        print('Connecting to upstream...')
+        url = 'http://' + upstream
+        try:
+            response = urllib.request.urlopen(url)
+        except socket.timeout:
+            # TODO: handle timeout
+            print("Request has timeouted")
+            pass
+        response_dict = {}
+        response_dict['code'] = response.status
+        response_dict['headers'] = dict(response.getheaders())
+        response_content = response.read().decode('utf-8')
+        try:
+            response_body = json.loads(response_content)
+            response_dict['json'] = response_body
+        except ValueError:
+            response_dict['content'] = response_content
+        print(response_dict)
+        response_json = json.dumps(response_dict)
+        # response_json_json = json.loads(response_json)
+        response_bytes = bytearray()
+        response_bytes.extend("HTTP/1.1 200 OK\n".encode())
+        response_bytes.extend("Content-Type: application/json\n".encode())
+        response_bytes.extend("\n".encode())
+        response_bytes.extend(response_json.encode())
+        clientsocket.sendall(response_bytes)
+        clientsocket.close()
 
 
 if __name__ == '__main__':
