@@ -43,6 +43,19 @@ def receive_request(sock):
     }
 
 
+def process_response(response):
+    response_dict = {}
+    response_dict['code'] = response.status
+    response_dict['headers'] = dict(response.getheaders())
+    response_content = response.read().decode('utf-8')
+    try:
+        response_body = json.loads(response_content)
+        response_dict['json'] = response_body
+    except ValueError:
+        response_dict['content'] = response_content
+    return json.dumps(response_dict)
+
+
 def process_get_request(upstream_host):
     print('Connecting to upstream...')
     if upstream_host[:4] != 'http':
@@ -55,16 +68,7 @@ def process_get_request(upstream_host):
         # TODO: handle timeout
         print("Request has timeouted")
         pass
-    response_dict = {}
-    response_dict['code'] = response.status
-    response_dict['headers'] = dict(response.getheaders())
-    response_content = response.read().decode('utf-8')
-    try:
-        response_body = json.loads(response_content)
-        response_dict['json'] = response_body
-    except ValueError:
-        response_dict['content'] = response_content
-    return json.dumps(response_dict)
+    return process_response(response)
 
 
 def process_post_request(upstream, content_to_process):
@@ -88,18 +92,11 @@ def process_post_request(upstream, content_to_process):
         request.add_header('Content-Length', len(content))
         # TODO: add custom headers
         response = urllib.request.urlopen(request, content)
-        response_dict = {}
-        response_dict['code'] = response.status
-        response_dict['headers'] = dict(response.getheaders())
-        response_content = response.read().decode('utf-8')
-        try:
-            response_body = json.loads(response_content)
-            response_dict['json'] = response_body
-        except ValueError:
-            response_dict['content'] = response_content
-        return json.dumps(response_dict)
+        return process_response(response)
     else:
         print('Unexpected header')
+        # TODO: handle this situation
+        return None
 
 
 def main():
