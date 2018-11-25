@@ -71,7 +71,7 @@ def main():
         }
         """
         url = "http://localhost:9001"
-        payload = "{\r\n    \"type\": \"POST\",\r\n    \"url\": \"http://postman-echo.com/post\",\r\n    \"headers\":\r\n    {\r\n        \"X-test\": \"python\",\r\n        \"X-test345\": 123\r\n    },\r\n    \"content\":\r\n    {\r\n        \"python\": \"testing forwarding POST\"\r\n    },\r\n    \"timeout\": 5\r\n}"
+        payload = "{\r\n    \"type\": \"POST\",\r\n    \"url\": \"http://postman-echo.com/post\",\r\n    \"headers\":\r\n    {\r\n        \"X-test\": \"python\",\r\n        \"X-test345\": 123,\r\n\t    \"content-length\": \"37\",\r\n\t    \"content-type\": \"application/json\"\r\n    },\r\n    \"content\":\r\n    {\r\n        \"python\": \"testing forwarding POST\"\r\n    },\r\n    \"timeout\": 5\r\n}"
         headers = {
             'Content-Type': "application/json",
             }

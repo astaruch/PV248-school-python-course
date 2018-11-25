@@ -87,10 +87,9 @@ def process_post_request(upstream, content_to_process):
         return process_get_request(url)
     elif method == 'POST':
         request = urllib.request.Request(url=url)
-        request.add_header('Content-Type', 'application/json')
+        for header_name, header_value in headers.items():
+            request.add_header(header_name, header_value)
         content = json.dumps(content).encode()
-        request.add_header('Content-Length', len(content))
-        # TODO: add custom headers
         response = urllib.request.urlopen(request, content)
         return process_response(response)
     else:
