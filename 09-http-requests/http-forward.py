@@ -45,7 +45,10 @@ def receive_request(sock):
 
 def process_get_request(upstream_host):
     print('Connecting to upstream...')
-    url = 'http://' + upstream_host
+    if upstream_host[:4] != 'http':
+        url = 'http://' + upstream_host
+    else:
+        url = upstream_host
     try:
         response = urllib.request.urlopen(url)
     except socket.timeout:
@@ -64,6 +67,41 @@ def process_get_request(upstream_host):
     return json.dumps(response_dict)
 
 
+def process_post_request(upstream, content_to_process):
+    print(content_to_process)
+    body = json.loads(content_to_process)
+    method = body["type"]
+    url = body["url"]
+    headers = body["headers"]
+    if method == "POST":
+        content = body["content"]
+    else:
+        content = None
+    timeout = body["timeout"]
+    print('Connecting to upstream...')
+    if method == 'GET':
+        return process_get_request(url)
+    elif method == 'POST':
+        request = urllib.request.Request(url=url)
+        request.add_header('Content-Type', 'application/json')
+        content = json.dumps(content).encode()
+        request.add_header('Content-Length', len(content))
+        # TODO: add custom headers
+        response = urllib.request.urlopen(request, content)
+        response_dict = {}
+        response_dict['code'] = response.status
+        response_dict['headers'] = dict(response.getheaders())
+        response_content = response.read().decode('utf-8')
+        try:
+            response_body = json.loads(response_content)
+            response_dict['json'] = response_body
+        except ValueError:
+            response_dict['content'] = response_content
+        return json.dumps(response_dict)
+    else:
+        print('Unexpected header')
+
+
 def main():
     if len(argv) != 3:
         print('Enter port and server!')
@@ -80,43 +118,9 @@ def main():
     print('Accepted a client connection.')
 
     request = receive_request(clientsocket)
-    request_method = request["method"]
-    request_body = request["content"]
 
     if request["method"] == 'POST':
-        """
-        {
-            "type": "GET",
-            "url": "http://postman-echo.com/get",
-            "headers":
-            {
-                "X-test": "python",
-                "X-test345": 123
-            },
-            "timeout": 5
-        }
-        """
-        in_request = json.loads(request_body)
-        out_request_type = in_request["type"]
-        out_request_url = in_request["url"]
-        out_request_headers = in_request["headers"]
-        if out_request_type == "POST":
-            out_request_type = in_request["content"]
-        timeout = in_request["timeout"]
-        print(in_request)
-        print('Connecting to upstream...')
-        out_request = bytearray()
-        out_request.extend(("{} {} HTTP/1.1\n"
-                            .format(out_request_type, out_request_url)
-                            ).encode())
-        print(out_request_headers.type)
-        for header_name, value in out_request_headers.items():
-            out_request.extend(("{}: {}\n".format(header_name, value)).encode())
-        ## GET
-        response = urllib.request.Request(url=out_request_url,
-
-            )
-        exit
+        response_json = process_post_request(upstream, request["content"])
     elif request["method"] == 'GET':
         response_json = process_get_request(upstream)
     else:

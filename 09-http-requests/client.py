@@ -53,6 +53,33 @@ def main():
 
         print(response.text)
     elif argv[1] == '4':
+        """Create request from POST data and forward it - POST"""
+        """
+        {
+            "type": "POST",
+            "url": "http://postman-echo.com/post",
+            "headers":
+            {
+                "X-test": "python",
+                "X-test345": 123
+            },
+            "content":
+            {
+                "python": "testing forwarding POST"
+            },
+            "timeout": 5
+        }
+        """
+        url = "http://localhost:9001"
+        payload = "{\r\n    \"type\": \"POST\",\r\n    \"url\": \"http://postman-echo.com/post\",\r\n    \"headers\":\r\n    {\r\n        \"X-test\": \"python\",\r\n        \"X-test345\": 123\r\n    },\r\n    \"content\":\r\n    {\r\n        \"python\": \"testing forwarding POST\"\r\n    },\r\n    \"timeout\": 5\r\n}"
+        headers = {
+            'Content-Type': "application/json",
+            }
+
+        response = requests.request("POST", url, data=payload, headers=headers)
+
+        print(response.text)
+    elif argv[1] == '5':
         """POST example"""
         url = "https://postman-echo.com/post"
 
