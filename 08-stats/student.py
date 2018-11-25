@@ -72,8 +72,8 @@ def main():
         st["mean"] = np.mean(np.array(points))
         st["total"] = np.sum(np.array(points))
         if reg != 0:
-            st["date 16"] = str(datetime.fromordinal((start_date + ceil(16 / reg))).date())
-            st["date 20"] = str(datetime.fromordinal((start_date + ceil(20 / reg))).date())
+            st["date 16"] = str(datetime.fromordinal((start_date + int(16 / reg))).date())
+            st["date 20"] = str(datetime.fromordinal((start_date + int(20 / reg))).date())
 
         print(json.dumps(st, indent=4))
 
