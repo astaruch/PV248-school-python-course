@@ -4,8 +4,14 @@ import re
 import json
 import urllib.request
 
+# TODO: handle ssl
+# TODO: force and handle it Accept-Encoding: Identity
+
 
 def receive_request(sock):
+    # TODO: parse headers and forward them correctly
+    # TODO: possible change this for http.server library
+    # TODO: test request with size moar than 1024 to test my shitty loop
     data = bytearray()
     GET = b'GET'
     POST = b'POST'
@@ -57,6 +63,7 @@ def process_response(response):
 
 
 def process_get_request(upstream_host, timeout=1):
+    # TODO: edit this code
     print('Connecting to upstream...')
     if upstream_host[:4] != 'http':
         url = 'http://' + upstream_host
