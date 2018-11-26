@@ -63,7 +63,8 @@ def process_response(response):
 
 
 def process_get_request(upstream_host, timeout=1):
-    # TODO: edit this code
+    # TODO: handle forwarding of headers
+    # TODO: edit check for http/https
     print('Connecting to upstream...')
     if upstream_host[:4] != 'http':
         url = 'http://' + upstream_host
@@ -105,6 +106,7 @@ def process_post_request(upstream, content_to_process):
         timeout = 1
     print('Connecting to upstream...')
     if method == 'GET':
+        # TODO: handle headers
         return process_get_request(url, timeout)
     elif method == 'POST':
         request = urllib.request.Request(url=url)
