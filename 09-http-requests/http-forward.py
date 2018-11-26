@@ -65,20 +65,31 @@ def process_get_request(upstream_host, timeout=1):
     try:
         response = urllib.request.urlopen(url=url, timeout=timeout)
     except (socket.timeout, urllib.error.URLError):
-        # TODO: handle timeout
         print("Request has timeouted")
-        pass
+        return json.dumps({"code": "timeout"})
     return process_response(response)
 
 
 def process_post_request(upstream, content_to_process):
     print(content_to_process)
     body = json.loads(content_to_process)
-    method = body["type"]
-    url = body["url"]
-    headers = body["headers"]
+    if "type" in body:
+        method = body["type"]
+    else:
+        return json.dumps({"code": "invalid json"})
+    if "url" in body:
+        url = body["url"]
+    else:
+        return json.dumps({"code": "invalid json"})
+    if "headers" in body:
+        headers = body["headers"]
+    else:
+        headers = dict()
     if method == "POST":
-        content = body["content"]
+        if "content" in body:
+            content = body["content"]
+        else:
+            return json.dumps({"code": "invalid json"})
     else:
         content = None
     if "timeout" in body:
@@ -97,13 +108,12 @@ def process_post_request(upstream, content_to_process):
             response = urllib.request.urlopen(request, data=content,
                                               timeout=timeout)
         except (socket.timeout, urllib.error.URLError):
-            # TODO: handle timeout
             print("request has timeouted")
+            return json.dumps({"code": "timeout"})
         return process_response(response)
     else:
-        print('Unexpected header')
         # TODO: handle this situation
-        exit
+        pass
 
 
 def main():
