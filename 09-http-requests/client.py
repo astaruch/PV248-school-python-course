@@ -10,7 +10,6 @@ def main():
         payload = ""
         headers = {
             'cache-control': "no-cache",
-            'host': ""
             }
 
         response = requests.request("GET", url, data=payload, headers=headers)

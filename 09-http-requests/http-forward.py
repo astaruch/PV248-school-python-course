@@ -15,8 +15,9 @@ def wrap_handler(url):
             try:
                 response = urllib.request.urlopen(url=request,
                                                   timeout=1)
-                # response = response.read().decode()
-                return self.process_response_from_server(response)
+                # print(response.read().decode()
+                content = self.process_response_from_server(response)
+                return self.send_response_to_client(content)
             except urllib.error.URLError:
                 print("Request has timeouted")
                 content = json.dumps({"code": "timeout"})
