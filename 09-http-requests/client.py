@@ -10,7 +10,7 @@ def main():
         payload = ""
         headers = {
             'cache-control': "no-cache",
-            'Host': ""
+            'host': ""
             }
 
         response = requests.request("GET", url, data=payload, headers=headers)
@@ -39,7 +39,7 @@ def main():
                 "X-test": "python",
                 "X-test345": 123
             },
-            "timeout": 5
+            "timeout": 0.1
         }
         """
         url = "http://localhost:9001"
