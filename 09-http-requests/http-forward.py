@@ -6,11 +6,10 @@ import http.server
 
 def wrap_handler(url):
     class RequestHandler(http.server.BaseHTTPRequestHandler):
-        if url[:4] != 'http':
-            url = 'http://' + url
-
         def do_GET(self):
-            request = urllib.request.Request(url=url,
+            target_url = 'http://' + url if url[:4] != 'http' else url
+
+            request = urllib.request.Request(url=target_url,
                                              headers=self.headers,
                                              data=None)
             try:
@@ -88,7 +87,7 @@ def main():
         exit(1)
     port = argv[1]
     upstream = argv[2]
-    listening_address = ('localhost', port)
+    listening_address = ('localhost', int(port))
     httpd = http.server.HTTPServer(server_address=listening_address,
                                    RequestHandlerClass=wrap_handler(upstream))
     httpd.serve_forever()
