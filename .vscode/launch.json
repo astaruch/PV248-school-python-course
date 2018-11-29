@@ -10,10 +10,10 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            // "cwd": "${workspaceFolder}/08-stats",
-            // "args": ["points.csv", "dates"]
-            "cwd": "${workspaceFolder}/09-http-requests",
-            "args": ["9001", "postman-echo.com/get"]
+            // "cwd": "${workspaceFolder}/09-http-requests",
+            // "args": ["9001", "postman-echo.com/get"]
+            "cwd": "${workspaceFolder}/10-common-gateway-interface",
+            "args": ["9001", "dir"]
         },
         {
             "name": "Python: Attach",
