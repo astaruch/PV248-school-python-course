@@ -10,14 +10,6 @@ class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 def wrap_handler():
     class RequestHandler(http.server.CGIHTTPRequestHandler):
-        """ Modify cgi_directories to accepts current directory"""
-        def __init__(self, *args, **kwargs):
-            super(self.__class__, self).__init__(*args, **kwargs)
-            curr_dir = os.path.dirname(self.path)
-            if curr_dir not in self.cgi_directories:
-                print('Appending "{}" into "cgi_directories"'.format(curr_dir))
-                self.cgi_directories.append(curr_dir)
-
         def do_HEAD(self):
             self.do_REQUEST()
 
@@ -28,7 +20,12 @@ def wrap_handler():
             self.do_REQUEST()
 
         def do_REQUEST(self):
-            print("Request = ", self.path)
+            """ Modify cgi_directories to accepts current directory"""
+            curr_dir = os.path.dirname(self.path)
+            if curr_dir not in self.cgi_directories:
+                print('Appending "{}" into "cgi_directories"'.format(curr_dir))
+                self.cgi_directories.append(curr_dir)
+
             """Test whether self.path corresponds to a CGI script."""
             if os.path.splitext(self.path)[1] == '.cgi' and self.is_cgi():
                 print('Running cgi...')
