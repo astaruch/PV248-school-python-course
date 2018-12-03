@@ -15,6 +15,7 @@ def wrap_handler():
             super(self.__class__, self).__init__(*args, **kwargs)
             curr_dir = os.path.dirname(self.path)
             if curr_dir not in self.cgi_directories:
+                print('Appending "{}" into "cgi_directories"'.format(curr_dir))
                 self.cgi_directories.append(curr_dir)
 
         def do_HEAD(self):
@@ -30,8 +31,10 @@ def wrap_handler():
             print("Request = ", self.path)
             """Test whether self.path corresponds to a CGI script."""
             if os.path.splitext(self.path)[1] == '.cgi' and self.is_cgi():
+                print('Running cgi...')
                 self.run_cgi()
             else:
+                print('Serving as static content...')
                 f = http.server.SimpleHTTPRequestHandler.send_head(self)
                 if f:
                     try:
