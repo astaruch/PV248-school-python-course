@@ -8,17 +8,14 @@ class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
     pass
 
 
-def wrap_handler(path):
+def wrap_handler():
     class RequestHandler(http.server.CGIHTTPRequestHandler):
-        """ Modify cgi_directories to accepts listening directory"""
+        """ Modify cgi_directories to accepts current directory"""
         def __init__(self, *args, **kwargs):
             super(self.__class__, self).__init__(*args, **kwargs)
-            print('Preprocessing path... "{}"'.format(path))
-            if os.path.isabs(path):
-                cgi_dir = os.path.dirname(path)
-            else:
-                cgi_dir = path
-            cgi_dir = '/' + cgi_dir
+            print('cwd: ', os.getcwd())
+            cwd = os.getcwd().split(os.path.sep)[-1]
+            cgi_dir = '/' + cwd
             print('Appending {} to "cgi_directories"...'.format(cgi_dir))
             self.cgi_directories.append(cgi_dir)
 
@@ -32,6 +29,7 @@ def wrap_handler(path):
             self.do_REQUEST()
 
         def do_REQUEST(self):
+            print("Request = ", self.path)
             """Test whether self.path corresponds to a CGI script."""
             if os.path.splitext(self.path)[1] == '.cgi' and self.is_cgi():
                 """Serve a POST request."""
@@ -54,8 +52,9 @@ def main():
 
     port = argv[1]
     directory_name = argv[2]
+    os.chdir(os.path.realpath(directory_name))
     listening_address = ('localhost', int(port))
-    handler = wrap_handler(directory_name)
+    handler = wrap_handler()
     httpd = Server(server_address=listening_address,
                    RequestHandlerClass=handler)
     httpd.serve_forever()
