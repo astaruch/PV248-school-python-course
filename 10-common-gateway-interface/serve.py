@@ -2,6 +2,7 @@ from sys import argv
 import http.server
 import os
 import socketserver
+import urllib.parse
 
 
 class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
@@ -27,7 +28,8 @@ def wrap_handler():
                 self.cgi_directories.append(curr_dir)
 
             """Test whether self.path corresponds to a CGI script."""
-            if os.path.splitext(self.path)[1] == '.cgi' and self.is_cgi():
+            filename = urllib.parse.urlparse(self.path).path[1:]
+            if filename.endswith('.cgi') and self.is_cgi():
                 print('Running cgi...')
                 self.run_cgi()
             else:
