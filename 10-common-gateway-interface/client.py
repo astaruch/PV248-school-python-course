@@ -33,6 +33,47 @@ def main():
         response = requests.request("GET", url, data=payload, headers=headers)
 
         print(response.text)
+    elif argv[1] == '4':
+        """GET hello_get.py.cgi without params. Expect:
+        <html>
+            <head>
+                <title>Hello - Second CGI Program</title>
+            </head>
+            <body>
+                <h2>Hello None None</h2>
+            </body>
+        </html>
+        """
+        url = "http://localhost:9001/hello_get.py.cgi"
+
+        payload = ""
+        headers = {}
+
+        response = requests.request("GET", url, data=payload, headers=headers)
+
+        print(response.text)
+    elif argv[1] == '5':
+        """GET hello_get.py.cgi with params. Expect:
+        <html>
+            <head>
+                <title>Hello - Second CGI Program</title>
+            </head>
+            <body>
+                <h2>Hello Andrej Staruch</h2>
+            </body>
+        </html>
+        """
+        url = "http://localhost:9001/hello_get.py.cgi"
+
+        querystring = {"first_name": "Andrej", "last_name": "Staruch"}
+
+        payload = ""
+        headers = {}
+
+        response = requests.request("GET", url, data=payload, headers=headers,
+                                    params=querystring)
+
+        print(response.text)
 
 
 if __name__ == '__main__':
