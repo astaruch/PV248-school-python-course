@@ -12,8 +12,8 @@
             "console": "integratedTerminal",
             // "cwd": "${workspaceFolder}/09-http-requests",
             // "args": ["9001", "postman-echo.com/get"]
-            "cwd": "${workspaceFolder}/10-common-gateway-interface",
-            "args": ["9001", "dir"]
+            "cwd": "${workspaceFolder}/11-tic-tac-toe-webserver",
+            "args": ["9000"]
         },
         {
             "name": "Python: Attach",
