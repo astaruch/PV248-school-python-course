@@ -3,7 +3,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse as urlparse
 import json
 
-
+# TODO: handle draws
 def wrap_handler():
     class RequestHandler(BaseHTTPRequestHandler):
         def do_GET(self):
