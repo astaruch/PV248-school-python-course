@@ -104,7 +104,7 @@ def wrap_handler():
                 # check if previous move caused a win on diagonal line
                 if self.board[0][2] == \
                    self.board[1][1] == \
-                   self.board[0][2] == \
+                   self.board[2][0] == \
                    player_id:
                     return True
                 return False
