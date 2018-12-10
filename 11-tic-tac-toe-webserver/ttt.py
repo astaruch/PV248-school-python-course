@@ -68,6 +68,7 @@ def wrap_handler():
                 self.next_player = 1
                 self.game_id = game_id
                 self.name = name
+                self.total_turns = 0
 
             def get_state(self):
                 if self.winner != -1:
@@ -122,9 +123,14 @@ def wrap_handler():
                             'Cell [{},{}] is already taken.'.format(x, y))
                 self.next_player = 1 if player_id == 2 else 2
                 self.board[x][y] = player_id
+                self.total_turns += 1
 
                 if self.check_victory(player_id, x, y):
                     self.winner = player_id
+                elif self.total_turns == 9:
+                    # The board is full and nobody had won - it's a draw
+                    self.winner = 0
+
                 return (True, '')
 
         games = []
