@@ -177,9 +177,9 @@ def wrap_handler():
                     status='bad',
                     message='Invalid parameter: x')
             # Chybné (ale číselné) x nebo y: kód 200 + status bad.
-            if y < 0 or x > 2:
+            if y < 0 or y > 2:
                 return self.invalid_request(
-                    code=400,
+                    code=200,
                     status='bad',
                     message='Invalid parameter: y')
             (play_ok, message) = self.games[game_id].play_turn(player_id, x, y)
