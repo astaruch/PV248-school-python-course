@@ -112,9 +112,11 @@ def wrap_handler():
 
             def play_turn(self, player_id, x, y):
                 if self.winner != -1:
-                    return (False,
-                            'The game has ended. Player {} won.'.format(
-                                self.winner))
+                    if self.winner == 0:
+                        message = "It's a draw."
+                    else:
+                        message = "Player {} won.".format(self.winner)
+                    return (False, 'The game has ended. {}'.format(message))
                 if player_id != self.next_player:
                     return (False,
                             'Player {} is on a turn.'.format(self.next_player))
