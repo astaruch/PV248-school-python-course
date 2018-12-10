@@ -160,7 +160,7 @@ def wrap_handler():
             print('Game {}. Player {} playing [{},{}].'.format(
                 game_id, player_id, x, y))
             # gameid špatné nebo chybí -- chybový kód
-            if game_id >= len(self.games):
+            if game_id >= len(self.games) or game_id < 0:
                 return self.invalid_request(
                     code=400,
                     status='bad',
