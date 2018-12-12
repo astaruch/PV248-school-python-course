@@ -1,0 +1,89 @@
+review od 433826 *0.5
+
+Review je velmi pekne. Spominane pripomienky su relevantne a celkovo mi pomozu
+napredovat v nasledujucom vyvoji. Su tam spomenute aj niektore zaciatocnicke
+chyby ktore som prehliadol, takze fajn ze som ich dostal k pripomenutiu.
+
+
+*** HW02 - scorelib.py ***
+
+Velmi pekný kód až na pár výhrad spomenutých nižšie:
+
+* match = re.search(r'^(.*)--([^,;\n]*)[;\n]?(.*)?',voice_line)
+--- Chválim použité regulárne výrazy, ktoré sú prehľadné.
+
+* load(filename)
+--- Príde mi to ako veľmi dlhá a neprehľadná funkcia (130 + riadkov) rozdelil by som ju na menšie časti.
+
+* with open(filename, 'r', encoding='utf8') as f:
+---- Obsahuje 13 if podmienok po sebe. Takisto by som túto čast zprehľadnil a rozdelil do viacerých funkcií prípadne zvolil inu konstrukciu, ktora by priniesla rovnaky vysledok
+
+* print('')
+--- Slúži to na výpisanie nového riadku je zbytočné a pre splnenie účelu sa dá pridať '\n' do predchádzajúceho riadku.
+
+
+* def add_author(self, name, born, died),
+* def composition(self):
+* def add_voice(self, voice_range, name):
+--- Funkcie majú práve 1 riadok. Nie som si istý, či je potrebné ich vytvárať
+
+
+--- Na niektorých miestach je zbytočný počet medzier. Pycharm ponuka moznost automaticky upravit taketo drobnosti. Do buducna odporucam vzdy pri submitovani ulohy tento nastroj vyuzit.
+
+
+*self.born = None if (not born or born == '') else int(born)
+--- Tento kod by sa dal prepisat na ocosi citatelnejsiu verziu pri ktorej sa nie je potrebne hlbsie zamyslat nad vyznamom
+
+
+*  i = i + 1
+--- Tato cast by sa dala krajsie zapisat ako i += 1
+
+
+*** HW03 import.py ***
+
+Paci sa mi dekompozicia ulohy na funkcie, ktore su prehladne rozdeluju kod na mensie ucelene kusky a tym padom vyrazne zlepsuje citatelnost kodu pre niekoho kto sa s tymto kodom stretol po prvy krat (mna), preto mam ku kodu len male vyhrady:
+
+--- Po ukonceni prace s databazou by sa patrilo spojenie zavriet, pouzitim napriklad tohto kodu:
+db_conn.close()
+
+--- Premennu sql_source_file by som prehlasil za globalnu:
+global sql_source_file
+sql_source_file = 'nazo_suboru'
+
+
+*if:
+*....
+*	persisted_scores[score] = score_id
+*   return score_id
+*else:
+*    return persisted_scores[score]
+
+--- Tento kod by si mohol prepisat bez zbyocnej else vetvy (pretoze v oboch pripadoch vracias persisted_scores[score] len v if vetve je tato premnna pomenovana ako score_id:
+
+if:
+....
+	persisted_scores[score] = score_id
+
+return persisted_scores[score]
+
+--- Takisto sa aj vo funkciach persist_edition, persist_person,.. by sa dala tato cast prepisat a usetril by si zbyocne riadky
+
+--- Ku suboru scorelib.py som sa vyjadril uz v review ulohy 02 a preto sa tu opakovat nebudem.
+
+
+
+*** HW05 eqn.py ***
+
+Vypracovanie tejto ulohy sa mi velmi pacilo, je lahko citatelna a pochopitelna. Takisto chvalim okomentovanie niektorych casti, iba par drobnych vyhrad:
+
+*num_of_equations = num_of_equations + 1
+--- Nahradil by som num_of_equations += 1 ako som uz spominal vyssie
+
+--- '+', '-', '=' by som ulozil ako globalne premnne pretoze s nimi pracujes na viacerych miestach.
+
+--- '-' - Niekto moze mat problem rozoznat ci sa jedna o spojovnik alebo pomlcku (Ja osobne som sa s tymto problemom stretol pri inej ulohe a tak hovorim s vlastnej skusenosti)
+
+*# print(distinct_variables), ..
+--- Pri finalnom odovzdani ulohy by som nabuduce pomocne / ladiace vypisy vymazal pripadne zakomentoval s odovodnenim. Toto sa vyskytlo na viacerych miestach kodu
+
+--- Niekedy inicializujes premennu "i" napriek tomu, ze je to riadiaca premenna for cyklu, je vhodnejsie pouzit inu premennu
