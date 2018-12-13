@@ -54,7 +54,7 @@ def wrap_handler():
                 return self.play_turn(game_id, player_id, x, y)
             else:
                 return self.invalid_request(
-                    code=400,
+                    code=404,
                     status='bad',
                     message='Invalid action requested (start|status|play)'
                 )
@@ -167,7 +167,7 @@ def wrap_handler():
                     message='Non-existing game requested')
             if not (player_id == 1 or player_id == 2):
                 return self.invalid_request(
-                    code=400,
+                    code=200,
                     status='bad',
                     message='Invalid parameter: player')
             # Chybné (ale číselné) x nebo y: kód 200 + status bad.
@@ -190,7 +190,7 @@ def wrap_handler():
                 )
             else:
                 return self.invalid_request(
-                    code=400,
+                    code=200,
                     status='bad',
                     message=message
                 )
