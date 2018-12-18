@@ -52,11 +52,13 @@ def wrap_handler():
                         message='Wrong parameter (non-integer)'
                     )
                 return self.play_turn(game_id, player_id, x, y)
+            elif action == 'list':
+                return self.list_games()
             else:
                 return self.invalid_request(
                     code=404,
                     status='bad',
-                    message='Invalid action requested (start|status|play)'
+                    message='Invalid action requested (start|status|play|list)'
                 )
 
         class Game():
@@ -142,6 +144,13 @@ def wrap_handler():
             new_game = self.Game(name, len(self.games))
             self.games.append(new_game)
             response = json.dumps({'id': new_game.game_id}, indent=2)
+            return self.send_response_to_client(200, response)
+
+        def list_games(self):
+            response = []
+            for game in self.games:
+                response.append({'id': game.game_id, 'name': game.name})
+            response = json.dumps(response, indent=2)
             return self.send_response_to_client(200, response)
 
         def state_of_game(self, game_id):
