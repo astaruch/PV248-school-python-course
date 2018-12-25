@@ -1,5 +1,8 @@
 review od 433487 *0.5
 
+Thanks for the review. Several points (such as number of empty lines) are in collision
+with a pep8 rules of writing a clean code. But other points were on point and usefull. Thanks
+
 Exercise 8:
 
 student.py
