@@ -1,0 +1,41 @@
+review od 433487 *0.5
+
+Exercise 8:
+
+student.py
+The code is not that hard to follow and overally looks good to me but there are some things that can be improved:
+
+- On line 7,8 - I would not 2 consecutive lines empty - there is no reason for that.
+- Function main() should probably take arguments and not use `sys.argv` - the reason for using main function like
+  that is that you can use code from file also in different scrips by importing module.
+- So I would suggest using `def main(args):` and passing arguments to this function if it is a script from sys.argv array.
+- I think that it is best practice  to not leave commented out code as on lines 81-94.
+- Naming variable like "st" is not best because it is hard to say what that variable represents
+
+
+stat.py
+- Again do not use more than one new line to separate parts of code.
+- Again I would make function main() take arguments rather than taking it from sys.argv
+- Otherwise, it is very nice and easily understandable
+
+Exercise 7:
+Code seems bit harder to follow, it would be good to add some comments to parts  that are really hard to understand.
+I would again avoid leaving commented out code - if you are using control version system like  git, there is no point in leaving commented out parts of code.
+The main() function seems a bit long and it is doing a lot of stuff. It would be beneficial to extract some parts of the logic into separate functions which have just single responsibility.
+That would make code easier to understand & more testable.
+Again I would avoid using sys.argv in main function and rather pass it via local arguments to the function like `main(sys.argv[1:])`.
+On line 72 - it would be nice to name that magic number 2 two somehow - e.g. make it a constant and give it explanatory name.
+On line 122, you are deleting elements from array  in place. Usually, it is best to not mutate objects (if you don't need  it for performance reasons) because it makes code harder to follow and also it can cause some nasty bugs.
+On line 91 - you are parsing int from string, it could be a good idea to wrap it in try, catch block as the argument passed into script may be arbitrary string.
+Other than that, it looks pretty nice, considering that the exercise is pretty hard.
+
+5-exercise
+eqn.py
+Again, I would avoid using sys.argv in the main function - pass it to the function like main(argv[1:]).
+
+It would be good idea to not write whole script in one main function but separate it into different functions. Ideally, you would create different modules which encapsulate certain functionality and then imoort it inside script.
+It would be best if you would not leave commented out code.
+I like that you use comments to explain weird parts of code (line 51, 35).
+I would avoid nesting control flow statements too much - line 25 - you have 4 levels of nested statement - that makes code really hard to follow.
+For parsing variables, it would be  probably easier to use regular expression than using 4 if/elif statements.
+I like that you are using `with()` functionality which handles closing files (and freeing resources in general) for you.
