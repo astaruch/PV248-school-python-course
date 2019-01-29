@@ -1,0 +1,36 @@
+review od 456673 *0.5
+
+Komentar:
+Review je nadprierne dobre. Obcerstvil som si informacie na naming conventions, ktore je vhodne stale dodrziavat. Vsetky poznamky su relevantne a suhlasim s nimi.
+
+
+- je super, že používáš linter/formátovač, ale s některými věcmi si automatický formátovač neumí dobře poradit (vypadá to ve výsledku hrozně), tyto kousky kódu by se měly buď přeformátovat ručně (otravné řešení), nebo si upravit stylesheet tak, aby formátoval pěkně
+
+
+Úkol 02:
+
+scorelib.py
+- tady není moc co vytknout, kód je pěkně čitelný a konzistentní skrze celý program, což se o programech mnoha ostatních programátorů tvrdit nedá
+- ...až na funkci load, která je nepěkně dlouhá, a určitě by si zasloužila rozdělit na menší funkce, zvlášťě pak to parsování kompozicí, voices a edition
+- nejsem si úplně jistý, co má dělat to 'f.closed', použití 'with' prostředky (v tomto případě soubor) automaticky uvolní po skončení with bloku
+- pochvala za použití moderních prvků pythonu
+
+Úkol 04:
+
+getprint.py
+- Je to super, že máš dlouhé SQL dotazy pěkně zalomené na více řádků, trochu ti to ale kazí to, že jsou tyto dlouhé, víceřádkové stringy přímo předány jako parametr nějaké funkce. Rozumné a pěkné řešení je SQL dotaz uložit do proměnné, a tuto proměnnou následně předávat funkci. Kdyby jsi to udělal takto, tak by se i předešlo tomu nepěknému formátování, protože chudák formátovač neví co s tím
+- v celé funkci main není jediný prázdný řádek... já prázdné řádky v kódu rád, zvyšuje to podle mě čitelnost, když pomocí nich programátor správně "provzdušní" kód a rozdělí ho do "vět" v rámci jedné funkce
+
+search.py
+- opět by tu bylo pěkné SQL dotazy umístit do proměnných...a opět funkci main provzdušnit
+- funkce main je příliš dlouhá, a v této úloze se dá celkem krásně rozdělit na malé funkce
+- jinak tu není moc co řešit, máš to celkem chytře napsané
+
+Úkol 07:
+
+music.py
+- proměnná notes je konstanta, a ty se v pythonu píšou ALL CAPS. Jelikož je to 'konstantní' list, tak by namísto něho bylo možné použít tuple, který je immutable, což by pomohlo zabránit nechtěnnému přepisu. A pokud bychom chtěli ještě silnější konstantu, tak je možné vytvořit Třídu obsahující getter (tedy funkci, která "vypadá jako proměnná"), který by vracel požadovanou hodnotu
+- octave_length je nejspíš taky proměnná, takže podobně jak výše, to platí i pro všechny ostatní výskyty podobných "obených" konstant
+- na některých místech ti chybí mezery kolem matematických operátorů
+- kód je téměř dobře rozdělený, ta dlouhá main to ale opět kazí :)
+- ten blok kódu 'if fin' je ukázkově nečitelný, a nelíbí se mi tam použítí starého formátovacího řetězce (operátor modulo na řetězce? fun). modernější alternativa je použít format funkci (a v případě jednoduší formátovacích nároku i třeba f-string)
